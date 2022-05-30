@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Cancel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>Delete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete</shortDescription>
+        <value>Delete</value>
+    </labels>
+    <labels>
+        <fullName>Delete_Confirmation</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delete Confirmation</shortDescription>
+        <value>Are you sure you want to delete this</value>
+    </labels>
+    <labels>
+        <fullName>Error_Deleting_Record</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error deleting record</shortDescription>
+        <value>Error deleting record</value>
+    </labels>
+    <labels>
+        <fullName>Fetch_Columns_Config_Error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Fetch Columns Config Error</shortDescription>
+        <value>Fetch Columns Config Error</value>
+    </labels>
+    <labels>
+        <fullName>Fetch_Data_Error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Fetch Data Error</shortDescription>
+        <value>Fetch Data Error</value>
+    </labels>
+    <labels>
+        <fullName>GeneralSystemErrorMessage</fullName>
+        <categories>Message</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>General System Error</shortDescription>
+        <value>An unexpected error has occurred in the application. Please contact your administrator or try again later.</value>
+    </labels>
+    <labels>
+        <fullName>Invalid_Relationship_Error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Invalid Relationship Error</shortDescription>
+        <value>Relationship field for query was not provided and no default relationship field has been found</value>
+    </labels>
+    <labels>
+        <fullName>Message_when_too_short</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Message when too short</shortDescription>
+        <value>Your entry must be at least 2 characters.</value>
+    </labels>
+    <labels>
+        <fullName>New</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New</shortDescription>
+        <value>New</value>
+    </labels>
+    <labels>
+        <fullName>Records_Updated_Successfully</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Records_Updated_Successfully</shortDescription>
+        <value>Records updated successfully</value>
+    </labels>
+    <labels>
+        <fullName>Related_List_Error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Related List Error</shortDescription>
+        <value>Fetch Related List Config Error</value>
+    </labels>
+    <labels>
+        <fullName>Search</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Search</shortDescription>
+        <value>Search</value>
+    </labels>
+    <labels>
+        <fullName>Search_this_list</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Search this list</shortDescription>
+        <value>Search this list...</value>
+    </labels>
+    <labels>
+        <fullName>Update_Record_Error_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Update Record Error Title</shortDescription>
+        <value>Error updating record</value>
+    </labels>
+    <labels>
+        <fullName>View_All</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>View All</shortDescription>
+        <value>View All</value>
+    </labels>
+</CustomLabels>

@@ -1,0 +1,33 @@
+{
+	"packageDirectories": [
+		{
+			"path": "frameworks",
+			"package": "Datatable Extended - Frameworks dependencies",
+			"versionNumber": "0.0.0.NEXT",
+			"definitionFile": "config/project-scratch-def.json",
+			"default": true
+		},
+		{
+			"path": "sfdx-source/core",
+			"package": "Datatable Extended - Core",
+			"versionNumber": "0.0.0.NEXT",
+			"definitionFile": "config/project-scratch-def.json",
+			"default": true
+		},
+		{
+			"path": "sfdx-source/extensions",
+			"package": "Datatable Extended - Extensions",
+			"versionNumber": "0.0.0.NEXT",
+			"definitionFile": "config/project-scratch-def.json",
+			"default": true
+		},
+		{
+			"path": "sfdx-source/unpackaged",
+			"default": false
+		}
+	],
+	"name": "lwc-extended-datatable",
+	"sfdcLoginUrl": "https://login.salesforce.com",
+	"sourceApiVersion": "54.0",
+	"packageAliases": {}
+}

@@ -1,0 +1,171 @@
+name: 'Validate pull request'
+on:
+    pull_request:
+        branches:
+            - main
+            - release/**
+        paths:
+            - sfdx-source/**
+
+# Note: secrets can not be used to conditionally run jobs: https://github.com/actions/runner/issues/520
+jobs:
+    verify-formatting:
+        name: 'Verify formatting'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
+              with:
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
+
+            - name: 'Install npm dependencies'
+              if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+              run: npm ci
+
+            - name: 'Verify formatting'
+              run: |
+                  git fetch origin $GITHUB_BASE_REF
+                  CHANGED_FILES=$(git diff-tree --diff-filter=AM --no-commit-id --name-only -r origin/$GITHUB_BASE_REF HEAD -- ':(exclude)**/reports/**' ':(exclude)**/email/**')
+                  IFS=$'\n'
+                  for FILE in $CHANGED_FILES;
+                  do
+                      npx prettier --list-different "$FILE"
+                  done
+                  unset IFS
+
+    verify-linting:
+        name: 'Verify linting'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
+              with:
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
+
+            - name: 'Install npm dependencies'
+              if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+              run: npm ci
+
+            - name: 'Verify linting'
+              run: |
+                  git fetch origin $GITHUB_BASE_REF
+                  CHANGED_FILES=$(git diff-tree --diff-filter=AM --no-commit-id --name-only -r origin/$GITHUB_BASE_REF HEAD -- **/{aura,lwc}/**)
+                  npx eslint $CHANGED_FILES --format junit --output-file=junit-reports/TEST-eslint.xml
+              # IFS=$'\n'
+              # for FILE in $CHANGED_FILES;
+              #     do
+              #         npx eslint "$FILE"
+              #     done
+              # unset IFS
+
+              # TODO: consider reporting with sarif as well, using sfdx-scanner instead or @microsoft/eslint-formatter-sarif
+            - name: Publish Test Report
+              if: always()
+              uses: mikepenz/action-junit-report@v3
+
+    verify-pmd:
+        name: 'Verify PMD'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: 'Verify PMD'
+              run: |
+                  git fetch origin $GITHUB_BASE_REF
+                  CHANGED_FILES=$(git diff-tree --diff-filter=AM --no-commit-id --name-only -r origin/$GITHUB_BASE_REF HEAD)
+                  CHANGED_FILES=$(echo $CHANGED_FILES | tr -s '[:blank:]' ',')
+                  npm install sfdx-cli --global
+                  sfdx plugins:install @salesforce/sfdx-scanner
+                  sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target $CHANGED_FILES,!frameworks/**/*.cls --engine pmd --severity-threshold 3 --format sarif --outfile apexScanResults.sarif
+
+            # TODO: consider reporting with junit as well
+            - name: Upload SARIF file
+              if: always()
+              uses: github/codeql-action/upload-sarif@v1
+              with:
+                  sarif_file: apexScanResults.sarif
+
+    # TODO: add validation against staging for release branches
+    validation-deployment:
+        name: 'Validation deployment'
+        needs: [verify-formatting, verify-linting, verify-pmd]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: 'Install SFDX CLI'
+              run: npm install sfdx-cli --global
+
+            - name: 'Create Destination auth file'
+              run: echo ${{ secrets.DEVINT_SFDX_AUTH_URL }} > ./DEVINT_SFDX_AUTH_URL.txt
+
+            - name: 'Authorize Destination'
+              run: sfdx auth:sfdxurl:store --sfdxurlfile ./DEVINT_SFDX_AUTH_URL.txt --setdefaultusername
+
+            - name: 'Remove Destination auth file'
+              run: rm --force ./DEVINT_SFDX_AUTH_URL.txt
+
+            # Note: we are temporarily testing sfdx force:source:deploy with RunLocalTests instead of $RUN_TEST_PARAMETER
+            # TEST_CLASSES=$((egrep -wrli @IsTest deltas || echo "") | xargs -rL 1 basename | sed 's/.cls//g' | paste -sd "," -)
+            # RUN_TEST_PARAMETER=$(if [ $TEST_CLASSES ]; then echo "--testlevel RunSpecifiedTests --runtests $TEST_CLASSES"; else echo ""; fi)
+            - name: 'Get deltas and deploy'
+              run: |
+                  git fetch origin $GITHUB_BASE_REF
+                  echo 'y' | sfdx plugins:install sfdx-git-delta
+                  mkdir deltas
+                  sfdx sgd:source:delta --source sfdx-source --from origin/$GITHUB_BASE_REF --to HEAD --output deltas --ignore .forceignore --generate-delta
+                  npm install fast-xml-parser
+                  node scripts/node/environment-replacements/main.js || true
+                  cp --recursive specific-environments/devint/. sfdx-source/ || true
+                  sfdx force:source:deploy --checkonly --manifest deltas/package/package.xml --postdestructivechanges deltas/destructiveChanges/destructiveChanges.xml --verbose --testlevel RunLocalTests
+
+    scratch-org-validations:
+        name: 'Execute scratch org validations'
+        needs: [verify-formatting, verify-linting, verify-pmd]
+        runs-on: ubuntu-latest
+        container:
+            # Warning: when running in container, git commands will not work since it will not be a repository
+            image: docker://salesforce/salesforcedx:latest-full
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: 'Create Dev Hub auth file'
+              run: echo ${{ secrets.DEVHUB_SFDX_AUTH_URL }} > ./DEVHUB_SFDX_AUTH_URL.txt
+
+            - name: 'Authorize Dev Hub'
+              run: sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_AUTH_URL.txt --setdefaultdevhubusername
+
+            - name: 'Remove Dev Hub auth file'
+              run: rm --force ./DEVHUB_SFDX_AUTH_URL.txt
+
+            - name: 'Create scratch org'
+              continue-on-error: true
+              run: |
+                  sfdx force:org:create --definitionfile config/project-scratch-def.json --setdefaultusername --durationdays 1 --setalias scratch-org
+                  npm install fast-xml-parser
+                  node scripts/node/environment-replacements/main.js || true
+                  cp --recursive specific-environments/scratch-org/. sfdx-source/ || true
+
+            # Note: This also pushes metadata in frameworks folder, useful to check and prevent circular dependancies between packages
+            - name: 'Push source to scratch org'
+              continue-on-error: true
+              run: sfdx force:source:push # if this fails due to limitations, change to run scripts/shell/deploy-packages.sh instead
+
+
+            # Note: redundant and error prone due to running frameworks and project tests together, until this issue is fixed: https://trailblazer.salesforce.com/issues_view?id=a1p4V000002JRzNQAW
+            # - name: 'Run local tests'
+            #   run: sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --resultformat json --loglevel error --json

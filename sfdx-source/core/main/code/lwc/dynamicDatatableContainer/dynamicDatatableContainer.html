@@ -1,0 +1,18 @@
+<template>
+	<c-related-list
+		table-info={tableInfo}
+		height="200px"
+		header-icon="standard:employee_job_position"
+		custom-title="Users"
+		show-subtitle
+		enable-infinite-loading
+		hide-new-action
+		show-search
+		hide-footer
+		is-outer-component
+		table-info-has-editable-columns
+		custom-handle-row-action-enabled
+		implements-drag-and-drop
+		onrecordsupdated={handleRecordsUpdated}>
+	</c-related-list>
+</template>

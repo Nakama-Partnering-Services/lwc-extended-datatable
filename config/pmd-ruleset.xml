@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset
+	name="Nakama ruleset for Salesforce.com Apex"
+	xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+	<description>
+        lwc-extended-datatable PMD ruleset
+	</description>
+
+    <!-- STANDARD RULES -->
+
+    <rule ref="category/apex/security.xml">
+        <priority>1</priority> <!-- Only Security should show red, everything else default 2 -->
+    </rule>
+    <rule ref="category/apex/design.xml" />
+    <rule ref="category/apex/performance.xml">
+        <exclude name="AvoidDebugStatements" /> <!-- We have smarter rule below -->
+    </rule>
+    <rule ref="category/apex/codestyle.xml" />
+    <rule ref="category/apex/bestpractices.xml">
+        <exclude name="ApexAssertionsShouldIncludeMessage" /> <!-- Not enforce, sometimes it is controversial and redundant -->
+    </rule>
+    <rule ref="category/apex/documentation.xml">
+        <exclude name="ApexDoc"/> <!-- Nonsense rule even against Clean Code -->
+    </rule>
+    <rule ref="category/apex/errorprone.xml" />
+    <rule ref="category/apex/multithreading.xml" />
+
+	<!-- CUSTOM SF METADATA RULES -->
+
+	<rule name="NoUnderscoresInFieldNames" language="xml" message="Custom fields should not contain underscores." class="net.sourceforge.pmd.lang.rule.XPathRule">
+		<priority>3</priority>
+		<properties>
+			<property name="version" value="2.0"></property>
+			<property name="xpath">
+				<value>
+					<![CDATA[
+						//CustomField/fullName/text[matches(@Image, ".*_.*__c")]
+					]]>
+				</value>
+			</property>
+		</properties>
+	</rule>
+
+	<rule name="ModifyAllOnPermSet" language="xml" message="Allowing this user permission can give access and ability to modify sensitive data." class="net.sourceforge.pmd.lang.rule.XPathRule">
+		<priority>3</priority>
+		<properties>
+			<property name="version" value="2.0"></property>
+			<property name="xpath">
+				<value>
+					<![CDATA[
+						//PermissionSet/userPermissions[ name/text[@Image='ModifyAllData'] and enabled/text[@Image='true'] ]
+					]]>
+				</value>
+			</property>
+		</properties>
+	</rule>
+
+</ruleset>
