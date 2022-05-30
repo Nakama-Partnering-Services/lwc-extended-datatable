@@ -249,7 +249,7 @@ The following configurations are only available for programmatic usage:
     -   Description: Id of the parent record to retrieve childs for.
     -   Type: String
     -   Required: false
-    -   Default: in a record page, this attribute is populated for Salesoforce by default when used directly from the App Builder.
+    -   Default: in a record page, this attribute is populated for Salesforce by default when used directly from the App Builder.
 
 -   `table-info`
     -   Description: Fixed table information to display, with columns, rows, actions and implementsDragAndDrop.
