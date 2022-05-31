@@ -9,7 +9,7 @@ Custom lightning web component of a Related List with standard styling and exten
 
 ## Introduction
 
-If the Salesforce standard component `Related List - Single` does not much your requirements, you may find this component useful.
+If the Salesforce standard component `Related List - Single` does not match your requirements, you may find this component useful.
 This component aims to allow Salesforce admins and Developers to further customize their lists and leverage the usage of additional functionalities.
 
 ## Table of contents
