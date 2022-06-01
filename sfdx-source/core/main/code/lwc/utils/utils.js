@@ -1,6 +1,45 @@
 import { showToastError } from 'c/showToastUtility';
 
 /**
+ * Reduces one or more LDS errors into a string of comma-separated error messages.
+ * @param {FetchResponse|FetchResponse[]} errors
+ * @return {String} Error messages separated by comma
+ */
+const reduceErrors = (errors) => {
+	if (!Array.isArray(errors)) {
+		errors = [errors];
+	}
+
+	return (
+		errors
+			// Remove null/undefined items
+			.filter((error) => !!error)
+			// Extract an error message
+			.map((error) => {
+				// UI API read errors
+				if (Array.isArray(error.body)) {
+					return error.body.map((e) => e.message);
+				}
+				// UI API DML, Apex and network errors
+				else if (error.body && typeof error.body.message === 'string') {
+					return error.body.message;
+				}
+				// JS errors
+				else if (typeof error.message === 'string') {
+					return error.message;
+				}
+				// Unknown error shape so try HTTP status text
+				return error.statusText;
+			})
+			// Flatten
+			.reduce((prev, curr) => prev.concat(curr), [])
+			// Remove empty strings
+			.filter((message) => !!message)
+			.join()
+	);
+};
+
+/**
  * Returns an async function wrapped to handle its possible errors
  * @param {function} asyncFunction - Async function to wrap. It should return a promise
  * @param {object} onErrorOptions - Toast options for the error notification if function fails
@@ -12,7 +51,7 @@ const handleAsyncError =
 			showToastError(
 				context,
 				Object.assign(onErrorOptions, {
-					message: error.body ? error.body.message : error.message
+					message: reduceErrors(error)
 				})
 			);
 			console.error(error);
@@ -36,4 +75,4 @@ const getDebouncedFunction =
 // Explanation: https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
 const removeSpecialChars = (str) => str?.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-export { handleAsyncError, getDebouncedFunction, removeSpecialChars };
+export { handleAsyncError, reduceErrors, getDebouncedFunction, removeSpecialChars };

@@ -1,6 +1,3 @@
-/**
- * This class is used as a wrapper by DynamicDatatableCtrl
- */
 public with sharing class ColumnConfig {
 	@AuraEnabled
 	public String actions;
@@ -62,7 +59,7 @@ public with sharing class ColumnConfig {
 		DisplayType.REFERENCE => 'reference'
 	};
 
-	// CTOR
+	// CONSTRUCTOR
 
 	public ColumnConfig(
 		FieldSetMember field,
@@ -140,8 +137,6 @@ public with sharing class ColumnConfig {
 		@AuraEnabled
 		public String target;
 
-		// CTOR
-
 		public TypeAttributes(String fieldName) {
 			label = new Label(fieldName);
 			target = '_top';
@@ -152,8 +147,6 @@ public with sharing class ColumnConfig {
 		@AuraEnabled
 		public String fieldName;
 
-		// CTOR
-
 		public Label(String fieldName) {
 			this.fieldName = fieldName;
 		}
@@ -162,8 +155,6 @@ public with sharing class ColumnConfig {
 	private with sharing class CellAttributes {
 		@AuraEnabled
 		public String alignment;
-
-		// CTOR
 
 		public CellAttributes() {
 			alignment = 'left';
