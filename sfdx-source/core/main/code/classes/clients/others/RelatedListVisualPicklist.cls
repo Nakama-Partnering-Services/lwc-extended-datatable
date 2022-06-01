@@ -1,7 +1,7 @@
 global with sharing class RelatedListVisualPicklist extends VisualEditor.DynamicPickList {
 	private VisualEditor.DynamicPickListRows rows;
 
-	// CTOR
+	// CONSTRUCTORS
 
 	@TestVisible
 	private RelatedListVisualPicklist(String pageType, String objectType) {

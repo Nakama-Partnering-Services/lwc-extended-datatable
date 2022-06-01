@@ -1,6 +1,3 @@
-/**
- * This class is used as a wrapper by RelatedListController
- */
 public with sharing class RelatedListConfig {
 	@AuraEnabled
 	public String iconName;
@@ -11,7 +8,7 @@ public with sharing class RelatedListConfig {
 	@AuraEnabled
 	public String sobjectLabelPlural;
 
-	// CTOR
+	// CONSTRUCTOR
 
 	public RelatedListConfig(String parentId, String fromObject, String relationshipField) {
 		iconName = getIconName(fromObject);
