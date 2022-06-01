@@ -15,11 +15,7 @@
 		"postinstall": "husky install",
 		"precommit": "lint-staged",
 		"scratch-org:prepare": "sh scripts/shell/prepare-scratch-org.sh",
-		"scratch-org:build": "sh scripts/shell/build-scratch-org.sh",
-		"scratch-org:pool:create:base": "sfdx sfpowerkit:pool:create -f so_pool_config-base.schema.json",
-		"scratch-org:pool:create:full": "sfdx sfpowerkit:pool:create -f so_pool_config-full.schema.json",
-		"scratch-org:pool:fetch:base": "sfdx sfpowerkit:pool:fetch --tag base --setdefaultusername",
-		"scratch-org:pool:fetch:full": "sfdx sfpowerkit:pool:fetch --tag full --setdefaultusername"
+		"scratch-org:build": "sh scripts/shell/build-scratch-org.sh"
 	},
 	"devDependencies": {
 		"@lwc/eslint-plugin-lwc": "^1.0.1",
