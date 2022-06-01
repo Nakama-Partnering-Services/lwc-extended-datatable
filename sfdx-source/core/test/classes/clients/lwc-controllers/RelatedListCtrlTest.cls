@@ -1,7 +1,7 @@
 @IsTest
-private with sharing class RelatedListCtrlTest {
+class RelatedListCtrlTest {
 	@IsTest
-	private static void fetchRelatedListConfig() {
+	static void fetchRelatedListConfig() {
 		// Setup
 		Account acc = new Account(Name = 'test');
 		insert acc;
