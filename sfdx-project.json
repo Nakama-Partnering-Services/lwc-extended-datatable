@@ -15,5 +15,8 @@
 	"name": "lwc-extended-datatable",
 	"sfdcLoginUrl": "https://login.salesforce.com",
 	"sourceApiVersion": "54.0",
-	"packageAliases": {}
+	"packageAliases": {
+		"Datatable Extended": "0Ho7Q0000008OTSSA2",
+		"Datatable Extended@0.0.0-3": "04t7Q000000co6uQAA"
+	}
 }

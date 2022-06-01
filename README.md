@@ -14,6 +14,7 @@ This component aims to allow Salesforce admins and Developers to further customi
 
 ## Table of contents
 
+-   [Considerations](#considerations)
 -   [Installation](#installation)
 -   [Usage](#usage)
 -   [Examples](#examples)
@@ -25,9 +26,13 @@ This component aims to allow Salesforce admins and Developers to further customi
 -   [Contributing](#contributing)
 -   [License](#license)
 
+## Considerations
+
+This unlocked package is org-dependent and relies on the fflib_SObjectDescribe class, assuming that it already exists in your org or package and it is public and accessible.
+
 ## Installation
 
-The content of this repository is available for installation as an Unlocked Package with [this link](https://login.salesforce.com/packaging/installPackage.apexp?p0=).
+The content of this repository is available for installation as an Unlocked Package with [this link](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t7Q000000co6uQAA).
 
 ## Usage
 
