@@ -1,7 +1,7 @@
 @IsTest
-private with sharing class DynamicDatatableCtrlTest {
+class DynamicDatatableCtrlTest {
 	@IsTest
-	private static void getTableInfo() {
+	static void getTableInfo() {
 		// Setup
 		Account acc = new Account(Name = 'test');
 		insert acc;
@@ -46,14 +46,14 @@ private with sharing class DynamicDatatableCtrlTest {
 		List<ColumnConfig> columnsConfig = DynamicDatatableCtrl.fetchColumnsConfig(columnsConfiguration);
 
 		List<SObject> data = (List<SObject>) JSON.deserialize(
-			DynamicDatatableCtrl.fetchData(queryConfig, null, null),
+			DynamicDatatableCtrl.fetchData(queryConfig, null),
 			List<SObject>.class
 		);
 
 		// If relationshipField is not provided, it tries to find the default
 		queryConfig.relationshipField = null;
 		List<SObject> data2 = (List<SObject>) JSON.deserialize(
-			DynamicDatatableCtrl.fetchData(queryConfig, null, null),
+			DynamicDatatableCtrl.fetchData(queryConfig, null),
 			List<SObject>.class
 		);
 
@@ -74,7 +74,7 @@ private with sharing class DynamicDatatableCtrlTest {
 	}
 
 	@IsTest
-	private static void fetchDataException() {
+	static void fetchDataException() {
 		// Setup
 		Account acc = new Account(Name = 'test');
 		insert acc;
@@ -95,7 +95,7 @@ private with sharing class DynamicDatatableCtrlTest {
 		String ex;
 		try {
 			queryConfig.fromObject = 'Acc';
-			DynamicDatatableCtrl.fetchData(queryConfig, null, null);
+			DynamicDatatableCtrl.fetchData(queryConfig, null);
 			System.assert(false, 'fetchData should have thrown an exception due to invalid object api name');
 		} catch (Exception e) {
 			ex = e.getMessage();
@@ -109,7 +109,7 @@ private with sharing class DynamicDatatableCtrlTest {
 	}
 
 	@IsTest
-	private static void updateRecords() {
+	static void updateRecords() {
 		// Setup
 		Account acc = new Account(Name = 'test1');
 		insert acc;

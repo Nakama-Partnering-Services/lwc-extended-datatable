@@ -1,5 +1,5 @@
 @IsTest
-private with sharing class TreeGridDataAdapterTest {
+class TreeGridDataAdapterTest {
 	@TestSetup
 	private static void makeData() {
 		Account acc1 = new Account(Name = 'Test1');
@@ -9,7 +9,7 @@ private with sharing class TreeGridDataAdapterTest {
 	}
 
 	@IsTest
-	private static void givenAccountWithChildWhenQueryRecursiveDataThenResultIsNested() {
+	static void givenAccountWithChildWhenQueryRecursiveDataThenResultIsNested() {
 		// Exercise
 		List<RecordWithChildren> result = TreeGridDataAdapter.getRecords(
 			'SELECT Id, ParentId, Name FROM Account',
@@ -22,7 +22,7 @@ private with sharing class TreeGridDataAdapterTest {
 	}
 
 	@IsTest
-	private static void givenAccountWithChildWhenQueryWithAndWithoutLimitThenResultsAreEquals() {
+	static void givenAccountWithChildWhenQueryWithAndWithoutLimitThenResultsAreEquals() {
 		// Exercise
 		String serializedResultWithoutLimit = JSON.serialize(
 			TreeGridDataAdapter.getRecords('SELECT Id, ParentId, Name FROM Account', 'ParentId', null)
