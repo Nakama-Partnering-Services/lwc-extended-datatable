@@ -1,22 +1,8 @@
 {
 	"packageDirectories": [
 		{
-			"path": "frameworks",
-			"package": "Datatable Extended - Frameworks dependencies",
-			"versionNumber": "0.0.0.NEXT",
-			"definitionFile": "config/project-scratch-def.json",
-			"default": true
-		},
-		{
 			"path": "sfdx-source/core",
-			"package": "Datatable Extended - Core",
-			"versionNumber": "0.0.0.NEXT",
-			"definitionFile": "config/project-scratch-def.json",
-			"default": true
-		},
-		{
-			"path": "sfdx-source/extensions",
-			"package": "Datatable Extended - Extensions",
+			"package": "Datatable Extended",
 			"versionNumber": "0.0.0.NEXT",
 			"definitionFile": "config/project-scratch-def.json",
 			"default": true
