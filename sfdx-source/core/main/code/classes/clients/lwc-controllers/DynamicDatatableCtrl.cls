@@ -5,13 +5,10 @@ public with sharing class DynamicDatatableCtrl {
 	}
 
 	@AuraEnabled
-	public static String fetchData(
-		DynamicDatatableQueryConfiguration queryConfig,
-		String nestingRelationshipField,
-		Integer maxDepth
-	) {
+	public static String fetchData(DynamicDatatableQueryConfiguration queryConfig, Integer maxDepth) {
 		Object result;
-		if (nestingRelationshipField != null) {
+		String nestingRelationshipField = queryConfig.nestingRelationshipField;
+		if (String.isNotBlank(nestingRelationshipField)) {
 			result = TreeGridDataAdapter.getRecords(
 				queryConfig.getFormattedQuery(),
 				nestingRelationshipField,

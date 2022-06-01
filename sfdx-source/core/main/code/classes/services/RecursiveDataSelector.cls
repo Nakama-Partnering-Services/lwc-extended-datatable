@@ -24,6 +24,8 @@ public with sharing class RecursiveDataSelector {
 	 * NOTE: This method has a query inside a while loop
 	 * TODO: This will not work properly if data comes from related list and relationshipField for nested records
 	 * is the same that for establishing the relationship of the related children records to render in the current record page
+	 * TODO: This will not work properly if records have a cyclic dependency between themselves
+	 * TODO: records queried recursevly need to be childs of the relationshipField main record as well. Is this desired?
 	 */
 	public List<RecordWithChildren> queryRecursively(Integer maxDepth) {
 		addNullParentClause();
@@ -36,7 +38,7 @@ public with sharing class RecursiveDataSelector {
 			result.add(new RecordWithChildren(record));
 		}
 
-		replaceNullParentClauseByParentInlatestRecordsRetrieved();
+		replaceNullParentClauseByParentInLatestRecordsRetrieved();
 
 		if (maxDepth == null) {
 			maxDepth = 10;
@@ -68,7 +70,7 @@ public with sharing class RecursiveDataSelector {
 		}
 	}
 
-	private void replaceNullParentClauseByParentInlatestRecordsRetrieved() {
+	private void replaceNullParentClauseByParentInLatestRecordsRetrieved() {
 		query = query.replace(
 			' WHERE ' +
 			relationshipField +

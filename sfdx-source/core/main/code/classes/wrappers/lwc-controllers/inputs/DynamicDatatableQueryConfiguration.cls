@@ -1,4 +1,6 @@
 public with sharing class DynamicDatatableQueryConfiguration {
+	private static final String QUERY_TEMPLATE = 'SELECT {0} FROM {1} WHERE {2} = \'\'{3}\'\' WITH SECURITY_ENFORCED ORDER BY {4} LIMIT {5} OFFSET {6}';
+
 	@AuraEnabled
 	public String selectFieldSet { get; set; }
 	@AuraEnabled
@@ -29,8 +31,8 @@ public with sharing class DynamicDatatableQueryConfiguration {
 	public Integer recordsLimit { get; set; }
 	@AuraEnabled
 	public Integer recordsOffset { get; set; }
-
-	private final String QUERY_TEMPLATE = 'SELECT {0} FROM {1} WHERE {2} = \'\'{3}\'\' WITH SECURITY_ENFORCED ORDER BY {4} LIMIT {5} OFFSET {6}';
+	@AuraEnabled
+	public String nestingRelationshipField { get; set; }
 
 	// PUBLIC
 
@@ -55,6 +57,10 @@ public with sharing class DynamicDatatableQueryConfiguration {
 
 	private String getSelectFields() {
 		Set<String> fields = new Set<String>();
+
+		if (String.isNotBlank(nestingRelationshipField)) {
+			fields.add(nestingRelationshipField);
+		}
 
 		for (FieldSetMember field : getFieldSetFields()) {
 			String fieldToAdd = field.getFieldPath();
