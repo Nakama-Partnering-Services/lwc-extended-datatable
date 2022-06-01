@@ -10,26 +10,6 @@
 			"label": "Build Scratch Org",
 			"type": "shell",
 			"command": "npm run scratch-org:build"
-		},
-		{
-			"label": "Create base Scratch Org pool",
-			"type": "shell",
-			"command": "npm run scratch-org:pool:create:base"
-		},
-		{
-			"label": "Create full Scratch Org pool",
-			"type": "shell",
-			"command": "npm run scratch-org:pool:create:full"
-		},
-		{
-			"label": "Fetch base Scratch Org from pool",
-			"type": "shell",
-			"command": "npm run scratch-org:pool:fetch:base"
-		},
-		{
-			"label": "Fetch full Scratch Org from pool",
-			"type": "shell",
-			"command": "npm run scratch-org:pool:fetch:full"
 		}
 	]
 }
