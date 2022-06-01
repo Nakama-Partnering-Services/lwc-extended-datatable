@@ -33,9 +33,9 @@ export default class TableHelper {
 				parentId: this.parentId,
 				orderBy: this.orderBy,
 				recordsLimit: this.recordsLimit,
-				recordsOffset: this.recordsOffset
+				recordsOffset: this.recordsOffset,
+				nestingRelationshipField: this.nestingRelationshipField
 			},
-			nestingRelationshipField: this.nestingRelationshipField,
 			maxDepth: this.maxDepth
 		};
 	}
@@ -126,7 +126,12 @@ export default class TableHelper {
 			title: this.label.Fetch_Data_Error
 		});
 
-		const result = await safeFetchData(this.parentComponentInstance, this.queryConfig);
-		return JSON.parse(result);
+		let result = await safeFetchData(this.parentComponentInstance, this.queryConfig);
+
+		if (result) {
+			result = JSON.parse(result);
+		}
+
+		return result;
 	}
 }

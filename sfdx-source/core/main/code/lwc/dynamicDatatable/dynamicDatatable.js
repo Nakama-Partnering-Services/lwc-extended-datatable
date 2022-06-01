@@ -284,11 +284,11 @@ export default class DynamicDatatable extends LightningElement {
 					title: this.label.Records_Updated_Successfully
 				});
 
+				this.dispatchEvent(new CustomEvent('recordsupdated'));
+
 				if (!this.tableInfo) {
 					await this._setData();
 				}
-
-				this.dispatchEvent(new CustomEvent('recordsupdated'));
 
 				const notifyChangeIds = records.map((row) => ({ recordId: row.Id }));
 
