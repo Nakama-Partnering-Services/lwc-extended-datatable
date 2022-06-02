@@ -1,4 +1,4 @@
-name: Create Frameworks Package Version
+name: 'Create Datatable Extended Package Version'
 
 on:
     push:
