@@ -3,7 +3,7 @@
 		{
 			"path": "sfdx-source/core",
 			"package": "Datatable Extended",
-			"versionNumber": "0.0.0.NEXT",
+			"versionNumber": "1.0.0.NEXT",
 			"definitionFile": "config/project-scratch-def.json",
 			"default": true
 		},
@@ -17,6 +17,6 @@
 	"sourceApiVersion": "54.0",
 	"packageAliases": {
 		"Datatable Extended": "0Ho7Q0000008OTSSA2",
-		"Datatable Extended@0.0.0-7": "04t7Q000000coGDQAY"
+		"Datatable Extended@1.0.0-1": "04t7Q000000coGIQAY"
 	}
 }
