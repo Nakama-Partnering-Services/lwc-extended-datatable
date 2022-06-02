@@ -117,13 +117,10 @@ jobs:
             - name: 'Remove Dev Hub auth file'
               run: rm --force ./DEVHUB_SFDX_AUTH_URL.txt
 
-            - name: 'Create scratch org'
+            - name: 'Prepare scratch org'
               continue-on-error: true
               run: |
-                  sfdx force:org:create --definitionfile config/project-scratch-def.json --setdefaultusername --durationdays 1
-                  npm install fast-xml-parser
-                  node scripts/node/environment-replacements/main.js || true
-                  cp --recursive specific-environments/scratch-org/. sfdx-source/ || true
+                  sh scripts/prepare-scratch-org.sh
 
             # Note: This also pushes metadata in frameworks folder, useful to check and prevent circular dependancies between packages
             - name: 'Push source to scratch org'
