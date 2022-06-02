@@ -1,3 +1,4 @@
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class RelatedListVisualPicklist extends VisualEditor.DynamicPickList {
 	private VisualEditor.DynamicPickListRows rows;
 

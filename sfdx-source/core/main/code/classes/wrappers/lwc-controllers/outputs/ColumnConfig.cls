@@ -1,3 +1,4 @@
+@SuppressWarnings('PMD.ExcessivePublicCount')
 public with sharing class ColumnConfig {
 	@AuraEnabled
 	public String actions;
@@ -61,6 +62,7 @@ public with sharing class ColumnConfig {
 
 	// CONSTRUCTOR
 
+	@SuppressWarnings('PMD.ExcessiveParameterList')
 	public ColumnConfig(
 		FieldSetMember field,
 		Boolean hideDefaultActions,

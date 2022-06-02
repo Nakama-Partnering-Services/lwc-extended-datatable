@@ -27,6 +27,7 @@ public with sharing class RecursiveDataSelector {
 	 * TODO: This will not work properly if records have a cyclic dependency between themselves
 	 * TODO: records queried recursevly need to be childs of the relationshipField main record as well. Is this desired?
 	 */
+	@SuppressWarnings('PMD.OperationWithLimitsInLoop')
 	public List<RecordWithChildren> queryRecursively(Integer maxDepth) {
 		addNullParentClause();
 
@@ -45,6 +46,7 @@ public with sharing class RecursiveDataSelector {
 		}
 
 		Integer currentDepth = 0;
+
 		while (!latestRecordsRetrieved.isEmpty() && currentDepth < maxDepth) {
 			currentDepth++;
 			latestRecordsRetrieved = Database.query(query);
