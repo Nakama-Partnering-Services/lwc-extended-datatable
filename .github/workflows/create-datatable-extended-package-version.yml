@@ -61,7 +61,7 @@ jobs:
                   git push
 
             - name: 'Prepare scratch org'
-              run: sh scripts/prepare-scratch-org.sh
+              run: sh scripts/shell/prepare-scratch-org.sh
 
             - name: 'Install Datatable Extended in scratch org'
               run: |

@@ -118,13 +118,11 @@ jobs:
               run: rm --force ./DEVHUB_SFDX_AUTH_URL.txt
 
             - name: 'Prepare scratch org'
-              continue-on-error: true
               run: |
-                  sh scripts/prepare-scratch-org.sh
+                  sh scripts/shell/prepare-scratch-org.sh
 
             # Note: This also pushes metadata in frameworks folder, useful to check and prevent circular dependancies between packages
             - name: 'Push source to scratch org'
-              continue-on-error: true
               run: sfdx force:source:push # if this fails due to limitations, change to run scripts/shell/deploy-packages.sh instead
 
             # Note: error prone due to running frameworks and project tests together, until this issue is fixed: https://trailblazer.salesforce.com/issues_view?id=a1p4V000002JRzNQAW
