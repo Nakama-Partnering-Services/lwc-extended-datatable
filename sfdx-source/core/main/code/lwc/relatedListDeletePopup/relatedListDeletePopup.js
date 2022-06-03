@@ -46,12 +46,14 @@ export default class RelatedListDeletePopup extends LightningElement {
 		const safeDeleteRecord = handleAsyncError(this.deleteRecord, {
 			title: this.label.Error_Deleting_Record
 		});
-		await safeDeleteRecord(this, this.recordId);
+		const result = await safeDeleteRecord(this, this.recordId);
 
-		showToastSuccess(this, {
-			title: `${this.sobjectLabel} deleted.`
-		});
-		this.dispatchEvent(new CustomEvent('recorddeleted'));
+		if (result) {
+			showToastSuccess(this, {
+				title: `${this.sobjectLabel} deleted.`
+			});
+			this.dispatchEvent(new CustomEvent('recorddeleted'));
+		}
 	}
 
 	/**

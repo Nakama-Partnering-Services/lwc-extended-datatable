@@ -16,14 +16,27 @@ const reduceErrors = (errors) => {
 			.filter((error) => !!error)
 			// Extract an error message
 			.map((error) => {
-				// UI API read errors
-				if (Array.isArray(error.body)) {
-					return error.body.map((e) => e.message);
+				const body = error.body;
+				if (body) {
+					// UI API read errors
+					if (body.duplicateResults?.length) {
+						return body.duplicateResults.map((e) => e.message);
+					} else if (body.fieldErrors?.length) {
+						return body.fieldErrors.map((e) => e.message);
+					} else if (body.pageErrors?.length) {
+						return body.pageErrors.map((e) => e.message);
+					} else if (Array.isArray(body)) {
+						return body.map((e) => e.message);
+					}
+					// UI API DML, Apex and network errors
+					else if (typeof body.message === 'string') {
+						if (body.output?.errors?.length) {
+							return body.message + ' ' + body.output.errors.map((e) => e.errorCode + ': ' + e.message);
+						}
+						return body.message;
+					}
 				}
-				// UI API DML, Apex and network errors
-				else if (error.body && typeof error.body.message === 'string') {
-					return error.body.message;
-				}
+
 				// JS errors
 				else if (typeof error.message === 'string') {
 					return error.message;
