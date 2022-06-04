@@ -10,7 +10,6 @@
         <targetConfig targets="lightning__RecordPage">
             <property name="relatedList" type="String" label="Child related list" required="true" datasource="apex://RelatedListVisualPicklist"/>
             <property name="fieldset" type="String" label="Fieldset for the column fields" required="true"/>
-            <property name="relationshipField" type="String" label="Relationship field" description="Api name of the relationship field in the child object referencing the parent" required="false"/>
             <property name="orderBy" type="String" label="Specifications about how to order the records displayed" required="false" default="Id ASC NULLS LAST, CreatedDate"/>
             <property name="recordsToLoad" type="Integer" label="Number of records to show" description=" When used as a tree grid, this value is used to retrieve children records along with top level records, so if it is small, children records may not appear" required="false" default="6"/>
             <property name="nestingRelationshipField" type="String" label="Nesting relationship field" description="Specify if you want the data to be nested as a tree grid. If not included already in the fieldset, it will be added automatically. It will not work properly if the value is equals to Relationship field" required="false"/>

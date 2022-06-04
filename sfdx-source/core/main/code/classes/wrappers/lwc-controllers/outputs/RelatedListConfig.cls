@@ -1,27 +1,69 @@
 public with sharing class RelatedListConfig {
 	@AuraEnabled
-	public String iconName;
-	@AuraEnabled
-	public String childListName;
-	@AuraEnabled
 	public String sobjectLabel;
 	@AuraEnabled
 	public String sobjectLabelPlural;
+	@AuraEnabled
+	public String childObjectName;
+	@AuraEnabled
+	public String relationshipField;
+	@AuraEnabled
+	public String iconName;
+	@AuraEnabled
+	public String relatedList;
 
 	// CONSTRUCTOR
 
-	public RelatedListConfig(String parentId, String fromObject, String relationshipField) {
-		iconName = getIconName(fromObject);
-		childListName = getChildListName(parentId, fromObject, relationshipField);
+	public RelatedListConfig(String parentId, String relatedList, String childObjectName, String relationshipField) {
+		if (String.isNotBlank(relatedList)) {
+			this(parentId, relatedList);
+		} else {
+			this(parentId, childObjectName, relationshipField);
+		}
+	}
 
-		Schema.DescribeSObjectResult sobjectDescribe = Schema.getGlobalDescribe().get(fromObject).getDescribe();
+	private RelatedListConfig(Id parentId, String relatedList) {
+		this.relatedList = relatedList;
+
+		Schema.DescribeSObjectResult sobjectDescribe;
+
+		for (ChildRelationship relation : parentId.getSObjectType().getDescribe().getChildRelationships()) {
+			if (relatedList == relation.getRelationshipName()) {
+				sobjectDescribe = relation.getChildSObject().getDescribe();
+				relationshipField = relation.getField().getDescribe().getName();
+				break;
+			}
+		}
+
 		sobjectLabel = sobjectDescribe.getLabel();
 		sobjectLabelPlural = sobjectDescribe.getLabelPlural();
+
+		childObjectName = sobjectDescribe.getLocalName();
+
+		iconName = getIconName();
+	}
+
+	private RelatedListConfig(Id parentId, String childObjectName, String relationshipField) {
+		this.childObjectName = childObjectName;
+		this.relationshipField = relationshipField;
+
+		Schema.DescribeSObjectResult sobjectDescribe = getSObjectDescribe(childObjectName);
+
+		sobjectLabel = sobjectDescribe.getLabel();
+		sobjectLabelPlural = sobjectDescribe.getLabelPlural();
+
+		iconName = getIconName();
+		relatedList = getRelatedList(parentId);
 	}
 
 	// PRIVATE
 
-	private String getIconName(String sobjectApiName) {
+	// Note: this approach has a better performance than GlobalDescribe or DescribeSobjects
+	private Schema.DescribeSObjectResult getSObjectDescribe(String objectApiName) {
+		return ((SObject) Type.forName(objectApiName).newInstance()).getSObjectType().getDescribe();
+	}
+
+	private String getIconName() {
 		List<Schema.DescribeTabSetResult> tabSets = Schema.DescribeTabs();
 		List<Schema.DescribeTabResult> tabs = new List<Schema.DescribeTabResult>();
 		List<Schema.DescribeIconResult> icons = new List<Schema.DescribeIconResult>();
@@ -34,12 +76,12 @@ public with sharing class RelatedListConfig {
 
 		for (Schema.DescribeTabResult tab : tabs) {
 			String tabObjName = tab.getSobjectName();
-			Boolean matchTabObjName = sobjectApiName == tabObjName;
+			Boolean matchTabObjName = childObjectName == tabObjName;
 			if (matchTabObjName) {
 				if (tab.isCustom()) {
 					icons.addAll(tab.getIcons());
 				} else {
-					iconName = 'standard:' + sobjectApiName.toLowerCase();
+					iconName = 'standard:' + childObjectName.toLowerCase();
 				}
 			}
 		}
@@ -57,37 +99,32 @@ public with sharing class RelatedListConfig {
 	/**
 	 * Returns the name of the relationship for the the child list, for example: 'Contacts' in Account.
 	 */
-	private String getChildListName(Id parentId, String fromObject, String relationshipField) {
+	private String getRelatedList(Id parentId) {
 		Schema.DescribeSObjectResult parentDescribe = parentId.getSObjectType().getDescribe();
-		String relationName = relationshipField;
 
-		if (String.isBlank(relationName)) {
-			relationName = getDefaultRelationshipField(fromObject, parentDescribe.getName());
+		if (String.isBlank(relationshipField)) {
+			relationshipField = getDefaultRelationshipField(parentDescribe.getName());
 		}
 
-		String childListName;
+		String relatedList;
 
 		for (Schema.ChildRelationship childRelation : parentDescribe.getChildRelationships()) {
 			String childName = childRelation.getChildSObject().getDescribe().getName();
-			Boolean matchObject = childName == fromObject;
-			String filedRelation = childRelation.getField().getDescribe().getName();
-			Boolean matchRelation = filedRelation == relationName;
+			Boolean matchObject = childName == childObjectName;
+			String fieldRelation = childRelation.getField().getDescribe().getName();
+			Boolean matchRelation = fieldRelation == relationshipField;
 
 			if (matchObject && matchRelation) {
-				childListName = childRelation.getRelationshipName();
+				relatedList = childRelation.getRelationshipName();
 				break;
 			}
 		}
 
-		return childListName;
+		return relatedList;
 	}
 
-	private String getDefaultRelationshipField(String fromObject, String parentObject) {
-		List<SObjectField> sObjectFields = Schema.getGlobalDescribe()
-			.get(fromObject)
-			.getDescribe()
-			.fields.getMap()
-			.values();
+	private String getDefaultRelationshipField(String parentObject) {
+		List<SObjectField> sObjectFields = getSObjectDescribe(childObjectName).fields.getMap().values();
 
 		for (SObjectField field : sObjectFields) {
 			DescribeFieldResult fieldDescribe = field.getDescribe();

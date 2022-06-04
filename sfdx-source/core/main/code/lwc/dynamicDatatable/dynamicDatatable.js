@@ -9,6 +9,8 @@ import { handleAsyncError, removeSpecialChars } from 'c/utils';
 
 import { update, sortBy, hasNestedRows, numberOfMaxDepthChildren, getMaxDepthTable } from './utils';
 
+import completeRelatedListConfig from '@salesforce/apex/RelatedListCtrl.completeRelatedListConfig';
+
 import TableHelper from './tableHelper';
 import ColumnsProcessor from './columnsProcessor';
 import DataProcessor from './dataProcessor';
@@ -42,7 +44,6 @@ export default class DynamicDatatable extends LightningElement {
 	@api fieldset;
 
 	// Optional
-	@api relationshipField;
 	@api orderBy = 'Id ASC NULLS LAST, CreatedDate';
 	@api recordsToLoad = 6;
 	@api height = 'auto';
@@ -87,6 +88,26 @@ export default class DynamicDatatable extends LightningElement {
 	_maxDepthStyle = 0;
 	_blockTreeGridActions;
 
+	// Not available from manual input, required if relatedList is not specified, this should.
+	_childObjectName;
+	@api get childObjectName() {
+		return this._childObjectName;
+	}
+
+	set childObjectName(value) {
+		this._childObjectName = value;
+	}
+
+	// Optional
+	_relationshipField;
+	@api get relationshipField() {
+		return this._relationshipField;
+	}
+
+	set relationshipField(value) {
+		this._relationshipField = value;
+	}
+
 	// If provided, other required attributes will be ignored
 	_tableInfo;
 	@api get tableInfo() {
@@ -105,13 +126,13 @@ export default class DynamicDatatable extends LightningElement {
 
 	get tableHelper() {
 		return new TableHelper(this)
-			.objectApiName(this.relatedList)
+			.objectApiName(this._childObjectName)
 			.fieldSetName(this.fieldset)
 			.hideDefaultColumnsActions(this.hideDefaultColumnsActions)
 			.sortable(this.sortable)
 			.editable(this.enableInlineEditing)
 			.searchable(this.searchable)
-			.relationshipField(this.relationshipField)
+			.relationshipField(this._relationshipField)
 			.parentId(this.recordId)
 			.orderBy(this.orderBy)
 			.recordsLimit(this.numberOfRecords + 1)
@@ -159,6 +180,7 @@ export default class DynamicDatatable extends LightningElement {
 		// to retrieve data imperatively for "onloadmore" event
 		this.showSpinner = true;
 		if (this.recordId) {
+			await this._getRelatedListConfig();
 			await this._setTableInformation();
 		}
 		this.showSpinner = false;
@@ -299,6 +321,24 @@ export default class DynamicDatatable extends LightningElement {
 	}
 
 	// PRIVATE
+
+	async _getRelatedListConfig() {
+		const safeCompleteRelatedListConfig = handleAsyncError(this._completeRelatedListConfig, {
+			title: this.label.Related_List_Error
+		});
+
+		const relatedListConfig = await safeCompleteRelatedListConfig(this, {
+			parentId: this.recordId,
+			relatedList: this.relatedList,
+			childObjectName: this._childObjectName,
+			relationshipField: this.relationshipField
+		});
+
+		if (relatedListConfig) {
+			this._childObjectName = relatedListConfig.childObjectName;
+			this._relationshipField = relatedListConfig.relationshipField;
+		}
+	}
 
 	_applyTableInfo() {
 		const isTreeGrid = hasNestedRows(this.tableInfo.rows);
@@ -624,5 +664,12 @@ export default class DynamicDatatable extends LightningElement {
 			detail: { tableRows: JSON.parse(JSON.stringify(this.data)) }
 		});
 		this.dispatchEvent(dropRowEvent);
+	}
+
+	/**
+	 * Wrapper function with self (although unused) parameter so it can be used by handlerAsyncError
+	 */
+	_completeRelatedListConfig(self, queryConfig) {
+		return completeRelatedListConfig(queryConfig);
 	}
 }
