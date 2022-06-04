@@ -6,7 +6,7 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import { handleAsyncError, getDebouncedFunction } from 'c/utils';
 
 import relatedListResources from '@salesforce/resourceUrl/relatedListResources';
-import fetchRelatedListConfig from '@salesforce/apex/RelatedListCtrl.fetchRelatedListConfig';
+import completeRelatedListConfig from '@salesforce/apex/RelatedListCtrl.completeRelatedListConfig';
 
 import Message_when_too_short from '@salesforce/label/c.Message_when_too_short';
 import New from '@salesforce/label/c.New';
@@ -36,11 +36,9 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 
 	// Required
 	@api recordId;
-	@api relatedList;
 	@api fieldset;
 
 	// Optional
-	@api relationshipField;
 	@api orderBy = 'Id ASC NULLS LAST, CreatedDate';
 	@api recordsToLoad = 6;
 	@api height = 'auto';
@@ -84,12 +82,41 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	instance = `instance${_numberOfCurrentInstance}`;
 
 	_iconName;
-	_childListName;
 	_sobjectLabel;
 	_sobjectLabelPlural;
 	_accumulatedRecordsRetrieved = 0;
 	_numberOfRecordsTitle;
 	_isStyleApplied;
+
+	// required from app builder
+	_relatedList;
+	@api get relatedList() {
+		return this._relatedList;
+	}
+
+	set relatedList(value) {
+		this._relatedList = value;
+	}
+
+	// Not available from manual input, required if relatedList is not specified, this should.
+	_childObjectName;
+	@api get childObjectName() {
+		return this._childObjectName;
+	}
+
+	set childObjectName(value) {
+		this._childObjectName = value;
+	}
+
+	// Optional
+	_relationshipField;
+	@api get relationshipField() {
+		return this._relationshipField;
+	}
+
+	set relationshipField(value) {
+		this._relationshipField = value;
+	}
 
 	// If provided, other required attributes will be ignored
 	_tableInfo;
@@ -160,8 +187,7 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	async connectedCallback() {
 		_numberOfCurrentInstance++;
 		// Retrieve related list configuration in connectedCallback instead of wired methods
-		// since relationshipField is optional and, if it is never assigned, wired method is
-		// is never called
+		// since relationshipField is optional and, if it is never assigned, wired method is never called
 		if (this.recordId) {
 			this.showSpinner = true;
 			await this._getRelatedListConfig();
@@ -205,16 +231,16 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 			this.dispatchEvent(new CustomEvent('createrecord'));
 		} else {
 			let defaultValues = '';
-			if (this.recordId && this.relationshipField) {
+			if (this.recordId && this._relationshipField) {
 				defaultValues = encodeDefaultFieldValues({
-					[this.relationshipField]: this.recordId
+					[this._relationshipField]: this.recordId
 				});
 			}
 
 			this[NavigationMixin.Navigate]({
 				type: 'standard__objectPage',
 				attributes: {
-					objectApiName: this.relatedList,
+					objectApiName: this._childObjectName,
 					actionName: 'new'
 				},
 				state: {
@@ -268,12 +294,12 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	}
 
 	handleGoToRelatedList() {
-		if (this.recordId && this.childListName) {
+		if (this.recordId && this._relatedList) {
 			this[NavigationMixin.Navigate]({
 				type: 'standard__recordRelationshipPage',
 				attributes: {
 					recordId: this.recordId,
-					relationshipApiName: this.childListName,
+					relationshipApiName: this._relatedList,
 					actionName: 'view'
 				}
 			});
@@ -318,19 +344,22 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	// PRIVATE
 
 	async _getRelatedListConfig() {
-		const safeFetchRelatedListConfig = handleAsyncError(this._fetchRelatedListConfig, {
+		const safeCompleteRelatedListConfig = handleAsyncError(this._completeRelatedListConfig, {
 			title: this.label.Related_List_Error
 		});
 
-		const relatedListConfig = await safeFetchRelatedListConfig(this, {
+		const relatedListConfig = await safeCompleteRelatedListConfig(this, {
 			parentId: this.recordId,
-			fromObject: this.relatedList,
+			relatedList: this._relatedList,
+			childObjectName: this._childObjectName,
 			relationshipField: this.relationshipField
 		});
 
 		if (relatedListConfig) {
 			this._iconName = relatedListConfig.iconName;
-			this.childListName = relatedListConfig.childListName;
+			this._relatedList = relatedListConfig.relatedList;
+			this._childObjectName = relatedListConfig.childObjectName;
+			this._relationshipField = relatedListConfig.relationshipField;
 			this._sobjectLabel = relatedListConfig.sobjectLabel;
 			this._sobjectLabelPlural = relatedListConfig.sobjectLabelPlural;
 		}
@@ -362,8 +391,8 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	/**
 	 * Wrapper function with self (although unused) parameter so it can be used by handlerAsyncError
 	 */
-	_fetchRelatedListConfig(self, queryConfig) {
-		return fetchRelatedListConfig(queryConfig);
+	_completeRelatedListConfig(self, queryConfig) {
+		return completeRelatedListConfig(queryConfig);
 	}
 
 	_applySearch(searchTerm) {

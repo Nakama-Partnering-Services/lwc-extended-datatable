@@ -7,11 +7,12 @@ global with sharing class RelatedListVisualPicklist extends VisualEditor.Dynamic
 	@TestVisible
 	private RelatedListVisualPicklist(String pageType, String objectType) {
 		if (pageType == 'RecordPage') {
-			Map<String, String> relatedLists = getRelatedList(objectType);
-
 			rows = new VisualEditor.DynamicPickListRows();
-			for (String related : relatedLists.keySet()) {
-				rows.addRow(new VisualEditor.DataRow(relatedLists.get(related), related));
+			for (ChildRelationship relation : childRelationships(objectType)) {
+				String relationshipName = relation.getRelationshipName();
+				if (String.isNotBlank(relationshipName)) {
+					rows.addRow(new VisualEditor.DataRow(relationshipName, relationshipName));
+				}
 			}
 		}
 	}
@@ -31,19 +32,6 @@ global with sharing class RelatedListVisualPicklist extends VisualEditor.Dynamic
 	}
 
 	// PRIVATE
-
-	private Map<String, String> getRelatedList(String type) {
-		Map<String, String> result = new Map<String, String>();
-
-		for (ChildRelationship relation : childRelationships(type)) {
-			DescribeSObjectResult child = relation.getChildSObject().getDescribe();
-
-			// Note: Without localname, it does not work in namespaced orgs
-			result.put(child.getLocalName(), child.getLabel());
-		}
-
-		return result;
-	}
 
 	private List<ChildRelationship> childRelationships(String parentType) {
 		return fflib_SObjectDescribe.getDescribe(parentType).getDescribe().getChildRelationships();
