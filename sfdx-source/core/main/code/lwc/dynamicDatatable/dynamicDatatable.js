@@ -6,10 +6,9 @@ import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 import { registerListener, unregisterAllListeners } from 'c/pubsub';
 import { showToastSuccess } from 'c/showToastUtility';
 import { handleAsyncError, removeSpecialChars } from 'c/utils';
+import { getRelatedListConfig } from 'c/relatedListUtils';
 
 import { update, sortBy, hasNestedRows, numberOfMaxDepthChildren, getMaxDepthTable } from './utils';
-
-import completeRelatedListConfig from '@salesforce/apex/RelatedListCtrl.completeRelatedListConfig';
 
 import TableHelper from './tableHelper';
 import ColumnsProcessor from './columnsProcessor';
@@ -40,7 +39,6 @@ export default class DynamicDatatable extends LightningElement {
 
 	// Required
 	@api recordId;
-	@api relatedList;
 	@api fieldset;
 
 	// Optional
@@ -87,6 +85,16 @@ export default class DynamicDatatable extends LightningElement {
 	_searchTerm = '';
 	_maxDepthStyle = 0;
 	_blockTreeGridActions;
+
+	// Required from app builder
+	_relatedList;
+	@api get relatedList() {
+		return this._relatedList;
+	}
+
+	set relatedList(value) {
+		this._relatedList = value;
+	}
 
 	// Not available from manual input, required if relatedList is not specified, this should.
 	_childObjectName;
@@ -178,12 +186,12 @@ export default class DynamicDatatable extends LightningElement {
 		// Retrieve table information in connectedCallback instead of wired methods
 		// to be able to set properly the showSpinner value and because we also need
 		// to retrieve data imperatively for "onloadmore" event
-		this.showSpinner = true;
 		if (this.recordId) {
-			await this._getRelatedListConfig();
+			this.showSpinner = true;
+			await getRelatedListConfig(this);
 			await this._setTableInformation();
+			this.showSpinner = false;
 		}
-		this.showSpinner = false;
 
 		registerListener('dropRowEvent', this._switchRowsAfterDrag, this);
 	}
@@ -321,24 +329,6 @@ export default class DynamicDatatable extends LightningElement {
 	}
 
 	// PRIVATE
-
-	async _getRelatedListConfig() {
-		const safeCompleteRelatedListConfig = handleAsyncError(this._completeRelatedListConfig, {
-			title: this.label.Related_List_Error
-		});
-
-		const relatedListConfig = await safeCompleteRelatedListConfig(this, {
-			parentId: this.recordId,
-			relatedList: this.relatedList,
-			childObjectName: this._childObjectName,
-			relationshipField: this.relationshipField
-		});
-
-		if (relatedListConfig) {
-			this._childObjectName = relatedListConfig.childObjectName;
-			this._relationshipField = relatedListConfig.relationshipField;
-		}
-	}
 
 	_applyTableInfo() {
 		const isTreeGrid = hasNestedRows(this.tableInfo.rows);
@@ -664,12 +654,5 @@ export default class DynamicDatatable extends LightningElement {
 			detail: { tableRows: JSON.parse(JSON.stringify(this.data)) }
 		});
 		this.dispatchEvent(dropRowEvent);
-	}
-
-	/**
-	 * Wrapper function with self (although unused) parameter so it can be used by handlerAsyncError
-	 */
-	_completeRelatedListConfig(self, queryConfig) {
-		return completeRelatedListConfig(queryConfig);
 	}
 }
