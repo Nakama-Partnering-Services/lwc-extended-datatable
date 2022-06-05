@@ -36,10 +36,6 @@
         <apexClass>RelatedListVisualPicklist</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <classAccesses>
-        <apexClass>TreeGridDataAdapter</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
     <description>This permission set contains access to the apex classes with Aura Enabled methods that are used from Lightning Web Components.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Extended Datatable Aura Enabled Classes</label>
