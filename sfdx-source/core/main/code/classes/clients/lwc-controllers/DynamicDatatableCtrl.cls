@@ -9,11 +9,8 @@ public with sharing class DynamicDatatableCtrl {
 		Object result;
 		String nestingRelationshipField = queryConfig.nestingRelationshipField;
 		if (String.isNotBlank(nestingRelationshipField)) {
-			result = TreeGridDataAdapter.getRecords(
-				queryConfig.getFormattedQuery(),
-				nestingRelationshipField,
-				maxDepth
-			);
+			result = new RecursiveDataSelector(queryConfig.getFormattedQuery(), nestingRelationshipField)
+				.queryRecursively(maxDepth);
 		} else {
 			result = Database.query(queryConfig.getFormattedQuery());
 		}

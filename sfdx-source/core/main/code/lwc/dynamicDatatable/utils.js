@@ -24,7 +24,7 @@ export function update(self, records) {
 }
 
 /**
- * NOTE: Special characters like á are understood as greater than z
+ * Note: Special characters like á are understood as greater than z
  */
 export function sortBy(field, reverse) {
 	const key = (x) => x[field];

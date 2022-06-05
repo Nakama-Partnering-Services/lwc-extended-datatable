@@ -102,7 +102,7 @@ public with sharing class ColumnConfig {
 			fieldName = fieldPath;
 			DisplayType fieldType = field.getType();
 			type = formattingTypesByFieldType.get(fieldType);
-			// NOTE: By making a column editable, the show-row-number-column attribute is always true and the number column is displayed
+			// Note: By making a column editable, the show-row-number-column attribute is always true and the number column is displayed
 			editable = editable && isUpdateable(field) && !NON_EDITABLE_TYPES.contains(fieldType);
 		}
 

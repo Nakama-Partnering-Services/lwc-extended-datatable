@@ -21,7 +21,7 @@ public with sharing class RecursiveDataSelector {
 	}
 
 	/**
-	 * NOTE: This method has a query inside a while loop
+	 * Note: This method has a query inside a while loop
 	 * TODO: This will not work properly if data comes from related list and relationshipField for nested records
 	 * is the same that for establishing the relationship of the related children records to render in the current record page
 	 * TODO: This will not work properly if records have a cyclic dependency between themselves

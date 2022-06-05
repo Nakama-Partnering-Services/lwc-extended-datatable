@@ -1,5 +1,5 @@
 @IsTest
-class TreeGridDataAdapterTest {
+class RecursiveDataSelectorTest {
 	@TestSetup
 	private static void makeData() {
 		Account acc1 = new Account(Name = 'Test1');
@@ -11,11 +11,11 @@ class TreeGridDataAdapterTest {
 	@IsTest
 	static void givenAccountWithChildWhenQueryRecursiveDataThenResultIsNested() {
 		// Exercise
-		List<RecordWithChildren> result = TreeGridDataAdapter.getRecords(
-			'SELECT Id, ParentId, Name FROM Account',
-			'ParentId',
-			null
-		);
+		List<RecordWithChildren> result = new RecursiveDataSelector(
+				'SELECT Id, ParentId, Name FROM Account',
+				'ParentId'
+			)
+			.queryRecursively(null);
 
 		// Verify
 		System.assertEquals(1, result[0].children.size(), 'Parent record should contain 1 nested child');
@@ -25,10 +25,10 @@ class TreeGridDataAdapterTest {
 	static void givenAccountWithChildWhenQueryWithAndWithoutLimitThenResultsAreEquals() {
 		// Exercise
 		String serializedResultWithoutLimit = JSON.serialize(
-			TreeGridDataAdapter.getRecords('SELECT Id, ParentId, Name FROM Account', 'ParentId', null)
+			new RecursiveDataSelector('SELECT Id, ParentId, Name FROM Account', 'ParentId').queryRecursively(null)
 		);
 		String serializedResultWithMaxDepth = JSON.serialize(
-			TreeGridDataAdapter.getRecords('SELECT Id, ParentId, Name FROM Account', 'ParentId', 1)
+			new RecursiveDataSelector('SELECT Id, ParentId, Name FROM Account', 'ParentId').queryRecursively(1)
 		);
 
 		// Verify
