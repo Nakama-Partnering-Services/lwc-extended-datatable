@@ -2,7 +2,7 @@ public with sharing class RecursiveDataSelector {
 	private String query;
 	private String relationshipField;
 
-	// CTOR
+	// CONSTRUCTOR
 
 	public RecursiveDataSelector(String query, String relationshipField) {
 		this.query = query;
