@@ -382,6 +382,8 @@ export default class DynamicDatatable extends LightningElement {
 
 		const maxDepth = numberOfMaxDepthChildren(this._allRows);
 
+		// Note: issue of first column without border right on header is not appearing with treeGrid
+		// because of the first hidden column without header used for arrow icons
 		if (maxDepth > this._maxDepthStyle) {
 			for (; this._maxDepthStyle <= maxDepth; this._maxDepthStyle++) {
 				style.innerText += `
