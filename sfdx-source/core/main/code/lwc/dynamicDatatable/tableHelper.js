@@ -11,6 +11,8 @@ export default class TableHelper {
 		Fetch_Data_Error
 	};
 
+	parentComponentInstance;
+
 	get columnsConfiguration() {
 		return {
 			columnsConfiguration: {
