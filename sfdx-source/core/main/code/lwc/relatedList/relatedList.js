@@ -3,14 +3,14 @@ import { NavigationMixin } from 'lightning/navigation';
 import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 import { loadStyle } from 'lightning/platformResourceLoader';
 
-import { handleAsyncError, getDebouncedFunction } from 'c/utils';
+import { getDebouncedFunction } from 'c/utils';
+import { getRelatedListConfig } from 'c/relatedListUtils';
 
 import relatedListResources from '@salesforce/resourceUrl/relatedListResources';
 import completeRelatedListConfig from '@salesforce/apex/RelatedListCtrl.completeRelatedListConfig';
 
 import Message_when_too_short from '@salesforce/label/c.Message_when_too_short';
 import New from '@salesforce/label/c.New';
-import Related_List_Error from '@salesforce/label/c.Related_List_Error';
 import Search from '@salesforce/label/c.Search';
 import Search_this_list from '@salesforce/label/c.Search_this_list';
 import View_All from '@salesforce/label/c.View_All';
@@ -28,7 +28,6 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	label = {
 		Message_when_too_short,
 		New,
-		Related_List_Error,
 		Search,
 		Search_this_list,
 		View_All
@@ -88,7 +87,7 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	_numberOfRecordsTitle;
 	_isStyleApplied;
 
-	// required from app builder
+	// Required from app builder
 	_relatedList;
 	@api get relatedList() {
 		return this._relatedList;
@@ -190,7 +189,7 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 		// since relationshipField is optional and, if it is never assigned, wired method is never called
 		if (this.recordId) {
 			this.showSpinner = true;
-			await this._getRelatedListConfig();
+			await getRelatedListConfig(this);
 			this.showSpinner = false;
 		}
 	}
@@ -342,28 +341,6 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	}
 
 	// PRIVATE
-
-	async _getRelatedListConfig() {
-		const safeCompleteRelatedListConfig = handleAsyncError(this._completeRelatedListConfig, {
-			title: this.label.Related_List_Error
-		});
-
-		const relatedListConfig = await safeCompleteRelatedListConfig(this, {
-			parentId: this.recordId,
-			relatedList: this._relatedList,
-			childObjectName: this._childObjectName,
-			relationshipField: this.relationshipField
-		});
-
-		if (relatedListConfig) {
-			this._iconName = relatedListConfig.iconName;
-			this._relatedList = relatedListConfig.relatedList;
-			this._childObjectName = relatedListConfig.childObjectName;
-			this._relationshipField = relatedListConfig.relationshipField;
-			this._sobjectLabel = relatedListConfig.sobjectLabel;
-			this._sobjectLabelPlural = relatedListConfig.sobjectLabelPlural;
-		}
-	}
 
 	/*Separate first real column header from the left of the table*/
 	_applyStyle() {
