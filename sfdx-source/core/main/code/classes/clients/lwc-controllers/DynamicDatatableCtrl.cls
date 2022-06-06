@@ -4,6 +4,7 @@ public with sharing class DynamicDatatableCtrl {
 		return columnsConfiguration.getColumnsConfig();
 	}
 
+	// Note: this method is not cached since data fetching is incremental and records may have changed
 	@AuraEnabled
 	public static String fetchData(DynamicDatatableQueryConfiguration queryConfig, Integer maxDepth) {
 		Object result;
