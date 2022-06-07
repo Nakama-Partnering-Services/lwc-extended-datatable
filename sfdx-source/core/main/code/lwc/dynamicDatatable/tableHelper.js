@@ -6,22 +6,17 @@ import Fetch_Columns_Config_Error from '@salesforce/label/c.Fetch_Columns_Config
 import Fetch_Data_Error from '@salesforce/label/c.Fetch_Data_Error';
 
 export default class TableHelper {
-	label = {
-		Fetch_Columns_Config_Error,
-		Fetch_Data_Error
-	};
-
 	parentComponentInstance;
 
 	get columnsConfiguration() {
 		return {
 			columnsConfiguration: {
-				objectApiName: this.objectApiName,
-				fieldSetName: this.fieldSetName,
-				hideDefaultColumnsActions: this.hideDefaultColumnsActions,
-				sortable: this.sortable,
-				editable: this.editable,
-				searchable: this.searchable
+				objectApiName: this.parentComponentInstance._childObjectName,
+				fieldSetName: this.parentComponentInstance.fieldset,
+				hideDefaultColumnsActions: this.parentComponentInstance.hideDefaultColumnsActions,
+				sortable: this.parentComponentInstance.sortable,
+				editable: this.parentComponentInstance.enableInlineEditing,
+				searchable: this.parentComponentInstance.searchable
 			}
 		};
 	}
@@ -29,16 +24,16 @@ export default class TableHelper {
 	get queryConfig() {
 		return {
 			queryConfig: {
-				selectFieldSet: this.fieldSetName,
-				fromObject: this.objectApiName,
-				relationshipField: this.relationshipField,
-				parentId: this.parentId,
-				orderBy: this.orderBy,
-				recordsLimit: this.recordsLimit,
-				recordsOffset: this.recordsOffset,
-				nestingRelationshipField: this.nestingRelationshipField
+				selectFieldSet: this.parentComponentInstance.fieldset,
+				fromObject: this.parentComponentInstance._childObjectName,
+				relationshipField: this.parentComponentInstance._relationshipField,
+				parentId: this.parentComponentInstance.recordId,
+				orderBy: this.parentComponentInstance.orderBy,
+				recordsLimit: this.parentComponentInstance.numberOfRecords + 1,
+				recordsOffset: this.parentComponentInstance._realQueryOffset,
+				nestingRelationshipField: this.parentComponentInstance.nestingRelationshipField
 			},
-			maxDepth: this.maxDepth
+			maxDepth: this.parentComponentInstance.maxDepth
 		};
 	}
 
@@ -46,78 +41,11 @@ export default class TableHelper {
 		this.parentComponentInstance = parentComponentInstance;
 	}
 
-	// BUILDER SETTERS
-
-	objectApiName(objectApiName) {
-		this.objectApiName = objectApiName;
-		return this;
-	}
-
-	fieldSetName(fieldSetName) {
-		this.fieldSetName = fieldSetName;
-		return this;
-	}
-
-	hideDefaultColumnsActions(hideDefaultColumnsActions) {
-		this.hideDefaultColumnsActions = hideDefaultColumnsActions;
-		return this;
-	}
-
-	sortable(sortable) {
-		this.sortable = sortable;
-		return this;
-	}
-
-	editable(editable) {
-		this.editable = editable;
-		return this;
-	}
-
-	searchable(searchable) {
-		this.searchable = searchable;
-		return this;
-	}
-
-	relationshipField(relationshipField) {
-		this.relationshipField = relationshipField;
-		return this;
-	}
-
-	parentId(parentId) {
-		this.parentId = parentId;
-		return this;
-	}
-
-	orderBy(orderBy) {
-		this.orderBy = orderBy;
-		return this;
-	}
-
-	recordsLimit(recordsLimit) {
-		this.recordsLimit = recordsLimit;
-		return this;
-	}
-
-	recordsOffset(recordsOffset) {
-		this.recordsOffset = recordsOffset;
-		return this;
-	}
-
-	nestingRelationshipField(nestingRelationshipField) {
-		this.nestingRelationshipField = nestingRelationshipField;
-		return this;
-	}
-
-	maxDepth(maxDepth) {
-		this.maxDepth = maxDepth;
-		return this;
-	}
-
 	// PUBLIC
 
-	async getColumnsConfig() {
+	getColumnsConfig() {
 		const safeFetchColumnsConfig = handleAsyncError(getColumnsConfig, {
-			title: this.label.Fetch_Columns_Config_Error
+			title: Fetch_Columns_Config_Error
 		});
 
 		return safeFetchColumnsConfig(this.parentComponentInstance, this.columnsConfiguration);
@@ -125,7 +53,7 @@ export default class TableHelper {
 
 	async getRowsData() {
 		const safeFetchData = handleAsyncError(getRowsData, {
-			title: this.label.Fetch_Data_Error
+			title: Fetch_Data_Error
 		});
 
 		let result = await safeFetchData(this.parentComponentInstance, this.queryConfig);

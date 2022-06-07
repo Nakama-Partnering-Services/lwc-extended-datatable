@@ -133,20 +133,7 @@ export default class DynamicDatatable extends LightningElement {
 	}
 
 	get tableHelper() {
-		return new TableHelper(this)
-			.objectApiName(this._childObjectName)
-			.fieldSetName(this.fieldset)
-			.hideDefaultColumnsActions(this.hideDefaultColumnsActions)
-			.sortable(this.sortable)
-			.editable(this.enableInlineEditing)
-			.searchable(this.searchable)
-			.relationshipField(this._relationshipField)
-			.parentId(this.recordId)
-			.orderBy(this.orderBy)
-			.recordsLimit(this.numberOfRecords + 1)
-			.recordsOffset(this._realQueryOffset)
-			.nestingRelationshipField(this.nestingRelationshipField)
-			.maxDepth(this.maxDepth);
+		return new TableHelper(this);
 	}
 
 	get _realQueryOffset() {
