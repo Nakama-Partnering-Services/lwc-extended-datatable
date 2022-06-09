@@ -59,6 +59,12 @@ public with sharing class RelatedListConfig {
 		final Schema.DescribeSObjectResult sobjectDescribe = fflib_SObjectDescribe.getDescribe(childObjectName)
 			.getDescribe();
 
+		if (String.isBlank(relationshipField)) {
+			relationshipField = getDefaultRelationshipField(
+				fflib_SObjectDescribe.getDescribe(recordId.getSObjectType()).getDescribe().getLocalName()
+			);
+		}
+
 		this.relationshipField = relationshipField;
 		this.childObjectName = childObjectName;
 
@@ -102,6 +108,28 @@ public with sharing class RelatedListConfig {
 		return result;
 	}
 
+	// Note: this is wrongly reported since fflib_SObjectDescribe does not support SObjectDescribeOptions and, for fields, DEFAULT is better than FULL_DESCRIBE
+	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
+	private String getDefaultRelationshipField(String parentObject) {
+		final List<SObjectField> sObjectFields = fflib_SObjectDescribe.getDescribe(childObjectName)
+			.getFieldsMap()
+			.values();
+
+		for (SObjectField field : sObjectFields) {
+			final DescribeFieldResult fieldDescribe = field.getDescribe();
+
+			final Boolean matchReference =
+				fieldDescribe.getType() == DisplayType.REFERENCE &&
+				parentObject ==
+				fflib_SObjectDescribe.getDescribe(fieldDescribe.getReferenceTo()[0]).getDescribe().getLocalName();
+			if (matchReference) {
+				return fieldDescribe.getLocalName();
+			}
+		}
+
+		throw new InvalidRelationshipException(Label.Invalid_Relationship_Error);
+	}
+
 	/**
 	 * Returns the name of the relationship for the the child list, for example: 'Contacts' in Account.
 	 */
@@ -110,10 +138,6 @@ public with sharing class RelatedListConfig {
 	private String getRelatedList(Id recordId) {
 		final Schema.DescribeSObjectResult parentDescribe = fflib_SObjectDescribe.getDescribe(recordId.getSObjectType())
 			.getDescribe();
-
-		if (String.isBlank(relationshipField)) {
-			relationshipField = getDefaultRelationshipField(parentDescribe);
-		}
 
 		final String result;
 
@@ -132,28 +156,6 @@ public with sharing class RelatedListConfig {
 		}
 
 		return result;
-	}
-
-	// Note: this is wrongly reported since fflib_SObjectDescribe does not support SObjectDescribeOptions and, for fields, DEFAULT is better than FULL_DESCRIBE
-	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
-	private String getDefaultRelationshipField(Schema.DescribeSObjectResult parentDescribe) {
-		final List<SObjectField> sObjectFields = fflib_SObjectDescribe.getDescribe(parentDescribe)
-			.getFieldsMap()
-			.values();
-
-		for (SObjectField field : sObjectFields) {
-			final DescribeFieldResult fieldDescribe = field.getDescribe();
-			final String fieldType = fieldDescribe.getType().name();
-
-			final Boolean matchReference =
-				fieldType == Schema.DisplayType.Reference.name() &&
-				parentDescribe == fflib_SObjectDescribe.getDescribe(fieldDescribe.getReferenceTo()[0]).getDescribe();
-			if (matchReference) {
-				return fieldDescribe.getLocalName();
-			}
-		}
-
-		throw new InvalidRelationshipException(Label.Invalid_Relationship_Error);
 	}
 
 	// INNER
