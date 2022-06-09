@@ -15,7 +15,7 @@ public with sharing class DynamicDatatableColumnsConfiguration {
 	// PUBLIC
 
 	public List<ColumnConfig> getColumnsConfig() {
-		List<ColumnConfig> result = new List<ColumnConfig>();
+		final List<ColumnConfig> result = new List<ColumnConfig>();
 		for (FieldSetMember member : getMembers(objectApiName, fieldSetName)) {
 			if (hasAccess(objectApiName, member)) {
 				result.add(new ColumnConfig(member, hideDefaultColumnsActions, sortable, editable, searchable));
@@ -26,17 +26,21 @@ public with sharing class DynamicDatatableColumnsConfiguration {
 
 	// PRIVATE
 
+	// Note: this is wrongly reported since fflib_SObjectDescribe does not support SObjectDescribeOptions
+	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
 	private List<FieldSetMember> getMembers(String type, String fieldSet) {
 		return fflib_SObjectDescribe.getDescribe(type).getFieldSet(fieldSet).getFields();
 	}
 
+	// Note: this is wrongly reported since fflib_SObjectDescribe does not support SObjectDescribeOptions
+	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
 	private Boolean hasAccess(String type, FieldSetMember member) {
-		Boolean result;
-		fflib_SObjectDescribe describe = fflib_SObjectDescribe.getDescribe(type);
+		final Boolean result;
+		final fflib_SObjectDescribe describe = fflib_SObjectDescribe.getDescribe(type);
 
-		String path = member.getFieldPath();
+		final String path = member.getFieldPath();
 		if (path.contains('.')) {
-			SObjectType parentType = describe.getField(field(path)).getDescribe().getReferenceTo()[0];
+			final SObjectType parentType = describe.getField(field(path)).getDescribe().getReferenceTo()[0];
 			result =
 				describe.getField(field(path)).getDescribe().isAccessible() &&
 				fflib_SObjectDescribe.getDescribe(parentType)

@@ -56,7 +56,7 @@ public with sharing class DynamicDatatableQueryConfiguration {
 	}
 
 	private String getSelectFields() {
-		Set<String> fields = new Set<String>();
+		final Set<String> fields = new Set<String>();
 
 		if (String.isNotBlank(nestingRelationshipField)) {
 			fields.add(nestingRelationshipField);
@@ -79,18 +79,23 @@ public with sharing class DynamicDatatableQueryConfiguration {
 		return String.join(new List<String>(fields), ',');
 	}
 
+	// Note: this is wrongly reported since fflib_SObjectDescribe does not support SObjectDescribeOptions
+	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
 	private List<FieldSetMember> getFieldSetFields() {
 		return fflib_SObjectDescribe.getDescribe(fromObject).getFieldSets().get(selectFieldSet).getFields();
 	}
 
+	// Note: this is wrongly reported since fflib_SObjectDescribe does not support SObjectDescribeOptions
+	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
 	private String getDefaultRelationshipField() {
-		List<SObjectField> sObjectFields = fflib_SObjectDescribe.getDescribe(fromObject).getFieldsMap().values();
-		String parentObject = parentId.getSObjectType().getDescribe().getName();
+		final List<SObjectField> sObjectFields = fflib_SObjectDescribe.getDescribe(fromObject).getFieldsMap().values();
+		final Schema.DescribeSObjectResult parentDescribe = fflib_SObjectDescribe.getDescribe(parentId.getSObjectType())
+			.getDescribe();
 
 		for (SObjectField field : sObjectFields) {
-			DescribeFieldResult fieldDescribe = field.getDescribe();
-			String fieldType = fieldDescribe.getType().name();
-			if (fieldType == 'reference' && parentObject == fieldDescribe.getReferenceTo()[0].getDescribe().getName()) {
+			final DescribeFieldResult fieldDescribe = field.getDescribe();
+			final String fieldType = fieldDescribe.getType().name();
+			if (fieldType == 'reference' && parentDescribe == fieldDescribe.getReferenceTo()[0].getDescribe()) {
 				return fieldDescribe.getName();
 			}
 		}

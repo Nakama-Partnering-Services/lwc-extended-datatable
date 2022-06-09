@@ -6,10 +6,12 @@ import Related_List_Error from '@salesforce/label/c.Related_List_Error';
 
 function _completeRelatedListConfig(context) {
 	return completeRelatedListConfig({
-		parentId: context.recordId,
-		relatedList: context.relatedList,
-		childObjectName: context.childObjectName,
-		relationshipField: context.relationshipField
+		relatedListConfig: {
+			recordId: context.recordId,
+			relatedList: context.relatedList,
+			childObjectName: context.childObjectName,
+			relationshipField: context.relationshipField
+		}
 	});
 }
 
