@@ -1,4 +1,4 @@
-@SuppressWarnings('PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ExcessivePublicCount, PMD.TooManyFields')
 public with sharing class ColumnConfig {
 	@AuraEnabled
 	public String actions;
