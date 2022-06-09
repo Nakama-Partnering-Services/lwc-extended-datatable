@@ -7,6 +7,8 @@ public with sharing class ColumnConfig {
 	@AuraEnabled
 	public Boolean editable;
 	@AuraEnabled
+	public Boolean displayReadOnlyIcon;
+	@AuraEnabled
 	public String fieldName;
 	@AuraEnabled
 	public Integer fixedWidth;
@@ -83,6 +85,7 @@ public with sharing class ColumnConfig {
 		String fieldPath = field.getFieldPath();
 		label = fieldPath.contains('.') ? getRelationalLabel(fieldPath) : field.getLabel();
 
+		// TODO: Use getNameField from fflib_SObjectDescribe to avoid issues with, for example, CaseNumber
 		if (field.getType() == DisplayType.REFERENCE) {
 			if (field.getFieldPath().endsWith('__c')) {
 				fieldPath = field.getFieldPath().replace('__c', '__r.Name');
@@ -93,17 +96,20 @@ public with sharing class ColumnConfig {
 			}
 		}
 
-		// TODO: Handle other non-name fields like CaseNumber
+		// TODO: Use getNameField from fflib_SObjectDescribe to avoid issues with, for example, CaseNumber
 		if (fieldPath == 'Name' || fieldPath.endsWith('.Name')) {
 			fieldName = fieldPath.replace('Name', 'LinkName');
 			type = 'url';
+			displayReadOnlyIcon = editable;
 			editable = false;
 		} else {
 			fieldName = fieldPath;
 			final DisplayType fieldType = field.getType();
 			type = formattingTypesByFieldType.get(fieldType);
+			displayReadOnlyIcon = editable;
 			// Note: By making a column editable, the show-row-number-column attribute is always true and the number column is displayed
 			editable = editable && isUpdateable(field) && !NON_EDITABLE_TYPES.contains(fieldType);
+			displayReadOnlyIcon = displayReadOnlyIcon && !editable;
 		}
 
 		if (type == 'url') {
