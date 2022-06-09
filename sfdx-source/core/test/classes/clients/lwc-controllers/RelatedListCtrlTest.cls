@@ -3,39 +3,48 @@ class RelatedListCtrlTest {
 	@IsTest
 	static void completeRelatedListConfigWithObject() {
 		// Setup
-		Account acc = new Account(Name = 'test');
+		final Account acc = new Account(Name = 'test');
 		insert acc;
-		Contact cnt = new Contact(LastName = 'test', AccountId = acc.Id);
+		final Contact cnt = new Contact(LastName = 'test', AccountId = acc.Id);
 		insert cnt;
 
+		RelatedListConfig config = new RelatedListConfig();
+		config.recordId = acc.Id;
+		config.childObjectName = 'Contact';
+
 		// Exercise
-		RelatedListConfig config = RelatedListCtrl.completeRelatedListConfig(acc.Id, null, 'Contact', null);
+		config = RelatedListCtrl.completeRelatedListConfig(config);
 
 		// Verify
-		System.assertEquals(config.relatedList, 'Contacts', 'Related list does not match');
-		System.assertNotEquals(config.sobjectLabel, null, 'Object label should not be null');
-		System.assertNotEquals(config.sobjectLabelPlural, null, 'Object plural label should not be null');
+		System.assertEquals('Contacts', config.relatedList, 'Related list does not match');
+		System.assertEquals('AccountId', config.relationshipField, 'Relationship field does not match');
+		System.assertNotEquals(null, config.sobjectLabel, 'Object label should not be null');
+		System.assertNotEquals(null, config.sobjectLabelPlural, 'Object plural label should not be null');
 		// If Contact does not have its own tab in the org it will be null so it can not be asserted
-		// System.assertNotEquals(config.iconName, null, 'Contacts icon should not be null');
+		// System.assertNotEquals(null, config.iconName, 'Contacts icon should not be null');
 	}
 
 	@IsTest
 	static void completeRelatedListConfigWithRelatedList() {
 		// Setup
-		Account acc = new Account(Name = 'test');
+		final Account acc = new Account(Name = 'test');
 		insert acc;
-		Contact cnt = new Contact(LastName = 'test', AccountId = acc.Id);
+		final Contact cnt = new Contact(LastName = 'test', AccountId = acc.Id);
 		insert cnt;
 
+		RelatedListConfig config = new RelatedListConfig();
+		config.recordId = acc.Id;
+		config.relatedList = 'Contacts';
+
 		// Exercise
-		RelatedListConfig config = RelatedListCtrl.completeRelatedListConfig(acc.Id, 'Contacts', null, null);
+		config = RelatedListCtrl.completeRelatedListConfig(config);
 
 		// Verify
-		System.assertEquals(config.childObjectName, 'Contact', 'Child object does not match');
-		System.assertEquals(config.relationshipField, 'AccountId', 'Relationship field does not match');
-		System.assertNotEquals(config.sobjectLabel, null, 'Object label should not be null');
-		System.assertNotEquals(config.sobjectLabelPlural, null, 'Object plural label should not be null');
+		System.assertEquals('Contact', config.childObjectName, 'Child object does not match');
+		System.assertEquals('AccountId', config.relationshipField, 'Relationship field does not match');
+		System.assertNotEquals(null, config.sobjectLabel, 'Object label should not be null');
+		System.assertNotEquals(null, config.sobjectLabelPlural, 'Object plural label should not be null');
 		// If Contact does not have its own tab in the org it will be null so it can not be asserted
-		// System.assertNotEquals(config.iconName, null, 'Contacts icon should not be null');
+		// System.assertNotEquals(null, config.iconName, 'Contacts icon should not be null');
 	}
 }

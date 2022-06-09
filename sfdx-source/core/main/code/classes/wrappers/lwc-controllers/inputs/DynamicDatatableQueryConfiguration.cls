@@ -91,13 +91,16 @@ public with sharing class DynamicDatatableQueryConfiguration {
 	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
 	private String getDefaultRelationshipField() {
 		final List<SObjectField> sObjectFields = fflib_SObjectDescribe.getDescribe(fromObject).getFieldsMap().values();
-		final Schema.DescribeSObjectResult parentDescribe = fflib_SObjectDescribe.getDescribe(parentId.getSObjectType())
-			.getDescribe();
+		final String parentObject = fflib_SObjectDescribe.getDescribe(parentId.getSObjectType())
+			.getDescribe()
+			.getLocalName();
 
 		for (SObjectField field : sObjectFields) {
 			final DescribeFieldResult fieldDescribe = field.getDescribe();
-			final String fieldType = fieldDescribe.getType().name();
-			if (fieldType == 'reference' && parentDescribe == fieldDescribe.getReferenceTo()[0].getDescribe()) {
+			if (
+				fieldDescribe.getType() == DisplayType.REFERENCE &&
+				parentObject == fieldDescribe.getReferenceTo()[0].getDescribe().getLocalName()
+			) {
 				return fieldDescribe.getName();
 			}
 		}
