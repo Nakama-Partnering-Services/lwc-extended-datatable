@@ -8,7 +8,7 @@ public with sharing class DynamicDatatableCtrl {
 	@AuraEnabled
 	public static String fetchData(DynamicDatatableQueryConfiguration queryConfig, Integer maxDepth) {
 		Object result;
-		String nestingRelationshipField = queryConfig.nestingRelationshipField;
+		final String nestingRelationshipField = queryConfig.nestingRelationshipField;
 		if (String.isNotBlank(nestingRelationshipField)) {
 			result = new RecursiveDataSelector(queryConfig.getFormattedQuery(), nestingRelationshipField)
 				.queryRecursively(maxDepth);

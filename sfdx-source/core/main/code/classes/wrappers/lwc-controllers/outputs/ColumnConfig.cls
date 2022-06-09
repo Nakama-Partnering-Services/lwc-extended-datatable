@@ -100,7 +100,7 @@ public with sharing class ColumnConfig {
 			editable = false;
 		} else {
 			fieldName = fieldPath;
-			DisplayType fieldType = field.getType();
+			final DisplayType fieldType = field.getType();
 			type = formattingTypesByFieldType.get(fieldType);
 			// Note: By making a column editable, the show-row-number-column attribute is always true and the number column is displayed
 			editable = editable && isUpdateable(field) && !NON_EDITABLE_TYPES.contains(fieldType);
@@ -127,6 +127,8 @@ public with sharing class ColumnConfig {
 		return result;
 	}
 
+	// Note: this is wrongly reported because, for fields, DEFAULT is better than FULL_DESCRIBE
+	@SuppressWarnings('PMD.EagerlyLoadedDescribeSObjectResult')
 	private Boolean isUpdateable(FieldSetMember field) {
 		return field.getSObjectField().getDescribe().isUpdateable();
 	}

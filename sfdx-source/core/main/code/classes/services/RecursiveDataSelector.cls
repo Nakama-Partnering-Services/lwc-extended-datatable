@@ -6,7 +6,7 @@ public with sharing class RecursiveDataSelector {
 
 	public RecursiveDataSelector(String query, String relationshipField) {
 		this.query = query;
-		String namespace = fflib_SObjectDescribe.class
+		final String namespace = fflib_SObjectDescribe.class
 			.getName()
 			.substringBefore('fflib_SObjectDescribe')
 			.removeEnd('.')
@@ -25,7 +25,7 @@ public with sharing class RecursiveDataSelector {
 	 * TODO: This will not work properly if data comes from related list and relationshipField for nested records
 	 * is the same that for establishing the relationship of the related children records to render in the current record page
 	 * TODO: This will not work properly if records have a cyclic dependency between themselves
-	 * TODO: records queried recursevly need to be childs of the relationshipField main record as well. Is this desired?
+	 * TODO: Records queried recursivey need to be childs of the relationshipField main record as well. Is this desired?
 	 */
 	@SuppressWarnings('PMD.OperationWithLimitsInLoop')
 	public List<RecordWithChildren> queryRecursively(Integer maxDepth) {
@@ -33,7 +33,7 @@ public with sharing class RecursiveDataSelector {
 
 		List<SObject> latestRecordsRetrieved = Database.query(query);
 
-		List<RecordWithChildren> result = new List<RecordWithChildren>();
+		final List<RecordWithChildren> result = new List<RecordWithChildren>();
 
 		for (SObject record : latestRecordsRetrieved) {
 			result.add(new RecordWithChildren(record));
@@ -62,7 +62,7 @@ public with sharing class RecursiveDataSelector {
 		if (query.containsIgnoreCase('WHERE')) {
 			query = query.replaceFirst('(?i) WHERE ', ' WHERE ' + relationshipField + ' = NULL AND ');
 		} else {
-			List<String> queryParts = query.split(' ');
+			final List<String> queryParts = query.split(' ');
 			for (Integer i = 0; i < queryParts.size(); i++) {
 				if (queryParts[i] == 'FROM') {
 					queryParts[i + 1] += ' WHERE ' + relationshipField + ' = NULL';
