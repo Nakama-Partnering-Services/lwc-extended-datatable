@@ -9,6 +9,8 @@ public with sharing class DynamicDatatableCtrl {
 	public static String fetchData(DynamicDatatableQueryConfiguration queryConfig, Integer maxDepth) {
 		Object result;
 		final String nestingRelationshipField = queryConfig.nestingRelationshipField;
+
+		// Note: queryConfig.getFormattedQuery() uses WITH SECURITY_ENFORCED
 		if (String.isNotBlank(nestingRelationshipField)) {
 			result = new RecursiveDataSelector(queryConfig.getFormattedQuery(), nestingRelationshipField)
 				.queryRecursively(maxDepth);

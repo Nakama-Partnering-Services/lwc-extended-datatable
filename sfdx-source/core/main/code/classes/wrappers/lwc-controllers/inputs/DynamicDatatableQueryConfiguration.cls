@@ -64,11 +64,13 @@ public with sharing class DynamicDatatableQueryConfiguration {
 
 		for (FieldSetMember field : getFieldSetFields()) {
 			String fieldToAdd = field.getFieldPath();
+
+			// TODO: Use getNameField from fflib_SObjectDescribe to avoid issues with, for example, CaseNumber
 			if (field.getType() == DisplayType.REFERENCE) {
 				if (field.getFieldPath().endsWith('__c')) {
 					fieldToAdd = field.getFieldPath().replace('__c', '__r.Name');
 				} else if (field.getFieldPath().endsWith('Id')) {
-					// Trick to no to replace other possible appearances of 'Id' in the field name
+					// Note: Trick to no to replace other possible appearances of 'Id' in the field name
 					fieldToAdd = field.getFieldPath() + '__';
 					fieldToAdd = fieldToAdd.replace('Id__', '.Name');
 				}
