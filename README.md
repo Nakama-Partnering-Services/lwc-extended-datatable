@@ -32,7 +32,7 @@ This unlocked package is org-dependent and relies on the fflib_SObjectDescribe c
 
 ## Installation
 
-The content of this repository is available for installation as an Unlocked Package with [this link](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t7Q000000cpVHQAY).
+The content of this repository is available for installation as an Unlocked Package with [this link](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t7Q000000cpVMQAY).
 
 ## Usage
 
