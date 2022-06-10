@@ -1,4 +1,4 @@
-# Extended Datatable LWC
+# nakama-related-list
 
 Custom lightning web component of a Related List with standard styling and extended functionality.
 
