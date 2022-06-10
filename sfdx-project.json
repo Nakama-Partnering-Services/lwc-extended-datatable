@@ -2,7 +2,7 @@
 	"packageDirectories": [
 		{
 			"path": "sfdx-source/core",
-			"package": "Datatable Extended",
+			"package": "Nakama Related List",
 			"versionNumber": "1.1.0.NEXT",
 			"definitionFile": "config/project-scratch-def.json",
 			"default": true
@@ -12,7 +12,7 @@
 			"default": false
 		}
 	],
-	"name": "lwc-extended-datatable",
+	"name": "nakama-related-list",
 	"sfdcLoginUrl": "https://login.salesforce.com",
 	"sourceApiVersion": "54.0",
 	"packageAliases": {
