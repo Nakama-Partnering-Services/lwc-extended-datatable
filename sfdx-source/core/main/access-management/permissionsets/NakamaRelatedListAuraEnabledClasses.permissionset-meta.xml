@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
-        <apexClass>ApplicationException</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>ColumnConfig</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -38,5 +34,5 @@
     </classAccesses>
     <description>This permission set contains access to the apex classes with Aura Enabled methods that are used from Lightning Web Components.</description>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Extended Datatable Aura Enabled Classes</label>
+    <label>Nakama Related List Aura Enabled Classes</label>
 </PermissionSet>
