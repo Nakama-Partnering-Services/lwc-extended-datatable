@@ -26,7 +26,7 @@ class DynamicDatatableCtrlTest {
 			availableRelatedLists.add(String.valueOf(row.getValue()));
 		}
 
-		System.assert(availableRelatedLists.contains(relatedList), 'Contact should be available');
+		System.assert(availableRelatedLists.contains(relatedList), 'Contacts should be available');
 
 		final DynamicDatatableColumnsConfiguration columnsConfiguration = new DynamicDatatableColumnsConfiguration();
 		columnsConfiguration.objectApiName = childObjectName;
