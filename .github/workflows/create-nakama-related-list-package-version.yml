@@ -1,4 +1,4 @@
-name: 'Create Datatable Extended Package Version'
+name: 'Create Nakama Related List Package Version'
 
 on:
     push:
@@ -40,10 +40,10 @@ jobs:
               run: rm --force ./DEVHUB_SFDX_AUTH_URL.txt
 
             # Note: Output is printed so that a possible error is not obscured
-            - name: 'Create package version - Datatable Extended'
-              id: package-datatable-extended
+            - name: 'Create package version - Nakama Related List'
+              id: package-nakama-related-list
               run: | # --skipvalidation
-                  json=$(sfdx force:package:version:create --package "Datatable Extended" --installationkeybypass --wait 30 --json 3>&1) || true
+                  json=$(sfdx force:package:version:create --package "Nakama Related List" --installationkeybypass --wait 30 --json 3>&1) || true
                   echo "Output ==> $json"
                   packageVersionId=$(echo $json | jq -r '.result.SubscriberPackageVersionId')
                   echo "::set-output name=packageVersionId::$packageVersionId"
@@ -63,7 +63,7 @@ jobs:
             - name: 'Prepare scratch org'
               run: sh scripts/shell/prepare-scratch-org.sh
 
-            - name: 'Install Datatable Extended in scratch org'
+            - name: 'Install Nakama Related List in scratch org'
               run: |
-                  versionId=$(echo '${{ steps.package-datatable-extended.outputs.packageVersionId }}')
+                  versionId=$(echo '${{ steps.package-nakama-related-list.outputs.packageVersionId }}')
                   sfdx force:package:install --package $versionId --publishwait 10 --wait 10 --noprompt
