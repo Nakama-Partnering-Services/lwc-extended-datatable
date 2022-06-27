@@ -13,8 +13,7 @@ export default class RelatedListDeletePopup extends LightningElement {
 	label = {
 		Cancel,
 		Delete,
-		Delete_Confirmation,
-		Error_Deleting_Record
+		Delete_Confirmation
 	};
 
 	@api recordId;
@@ -57,7 +56,7 @@ export default class RelatedListDeletePopup extends LightningElement {
 			this.dispatchEvent(new CustomEvent('recorddeleted'));
 		} catch (error) {
 			showToastError(this, {
-				title: this.label.Error_Deleting_Record,
+				title: Error_Deleting_Record,
 				message: reduceErrors(error)
 			});
 			console.error(error);
