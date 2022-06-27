@@ -3,7 +3,7 @@
 		{
 			"path": "sfdx-source/core",
 			"package": "Nakama Related List",
-			"versionNumber": "1.1.0.NEXT",
+			"versionNumber": "1.1.1.NEXT",
 			"definitionFile": "config/project-scratch-def.json",
 			"default": true
 		},
@@ -17,6 +17,6 @@
 	"sourceApiVersion": "54.0",
 	"packageAliases": {
 		"Nakama Related List": "0Ho7Q0000008OTSSA2",
-		"Nakama Related List@1.1.0-4": "04t7Q000000ctgKQAQ"
+		"Nakama Related List@1.1.1-1": "04t7Q000000ctgPQAQ"
 	}
 }
