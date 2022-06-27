@@ -189,8 +189,10 @@ export default class DynamicDatatable extends LightningElement {
 
 	// API EXPOSED
 
-	@api handleRefresh() {
-		this._setData();
+	@api async handleRefresh() {
+		this.showSpinner = true;
+		await this._setData();
+		this.showSpinner = false;
 	}
 
 	@api

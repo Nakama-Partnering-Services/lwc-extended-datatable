@@ -1,4 +1,6 @@
 <template>
+	<lightning-spinner if:true={showSpinner} variant="brand" alternative-text="Loading" size="large">
+	</lightning-spinner>
 	<c-modal>
 		<span slot="title">{title}</span>
 		<slot class="slds-align_absolute-center"> {body} </slot>

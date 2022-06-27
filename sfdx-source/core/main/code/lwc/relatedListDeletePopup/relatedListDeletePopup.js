@@ -1,8 +1,8 @@
 import { LightningElement, api } from 'lwc';
 import { deleteRecord } from 'lightning/uiRecordApi';
 
-import { handleAsyncError } from 'c/utils';
-import { showToastSuccess } from 'c/showToastUtility';
+import { showToastSuccess, showToastError } from 'c/showToastUtility';
+import { reduceErrors } from 'c/utils';
 
 import Cancel from '@salesforce/label/c.Cancel';
 import Delete from '@salesforce/label/c.Delete';
@@ -19,6 +19,8 @@ export default class RelatedListDeletePopup extends LightningElement {
 
 	@api recordId;
 	@api sobjectLabel;
+
+	showSpinner;
 
 	get body() {
 		return `${this.label.Delete_Confirmation} ${this.sobjectLabel ? this.sobjectLabel.toLowerCase() : ''}?`;
@@ -41,25 +43,25 @@ export default class RelatedListDeletePopup extends LightningElement {
 	}
 
 	async handleDelete() {
+		this.showSpinner = true;
 		this.hide();
 
-		const safeDeleteRecord = handleAsyncError(this.deleteRecord, {
-			title: this.label.Error_Deleting_Record
-		});
-		const result = await safeDeleteRecord(this, this.recordId);
-
-		if (result) {
+		// Note: handleAsyncError is not used because when the function success it returns undefined
+		// as well as when it fails, so success can not be checked
+		try {
+			await deleteRecord(this.recordId);
 			showToastSuccess(this, {
 				title: `${this.sobjectLabel} deleted.`
 			});
-			this.dispatchEvent(new CustomEvent('recorddeleted'));
-		}
-	}
 
-	/**
-	 * Wrapper function with self (although unused) parameter so it can be used by handlerAsyncError
-	 */
-	deleteRecord(self, recordId) {
-		return deleteRecord(recordId);
+			this.dispatchEvent(new CustomEvent('recorddeleted'));
+		} catch (error) {
+			showToastError(this, {
+				title: this.label.Error_Deleting_Record,
+				message: reduceErrors(error)
+			});
+			console.error(error);
+		}
+		this.showSpinner = false;
 	}
 }
