@@ -53,9 +53,14 @@ export default class RelatedList extends NavigationMixin(LightningElement) {
 	@api isOuterComponent;
 
 	// Optional, datatable specific
+	@api hideTableHeader;
+	@api suppressBottomBar;
 	@api showRowNumberColumn;
 	@api hideCheckboxColumn;
+	@api maxColumnWidth = '1000px';
+	@api minColumnWidth = '50px';
 	@api resizeColumnDisabled;
+	@api columnWidthsMode = 'fixed';
 	@api enableInfiniteLoading;
 
 	@api hideDefaultColumnsActions;

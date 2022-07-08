@@ -47,9 +47,14 @@ export default class DynamicDatatable extends LightningElement {
 	@api height = 'auto';
 
 	// Optional, datatable specific
+	@api hideTableHeader;
+	@api suppressBottomBar;
 	@api showRowNumberColumn;
 	@api hideCheckboxColumn;
+	@api maxColumnWidth = '1000px';
+	@api minColumnWidth = '50px';
 	@api resizeColumnDisabled;
+	@api columnWidthsMode = 'fixed';
 	@api enableInfiniteLoading;
 
 	// Optional, columns specific

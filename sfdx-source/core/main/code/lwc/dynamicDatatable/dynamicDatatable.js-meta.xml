@@ -15,9 +15,14 @@
             <property name="nestingRelationshipField" type="String" label="Nesting relationship field" description="Specify if you want the data to be nested as a tree grid. If not included already in the fieldset, it will be added automatically. It will not work properly if the value is equals to Relationship field" required="false"/>
             <property name="maxDepth" type="Integer" label="Max depth" description="Only applies when Is Tree Grid is true. If not specified, then 10 is applied" required="false"/>
             <property name="height" type="String" label="Height" description="Value for the height CSS attribute (should be fixed if inifite loading is enabled)" required="false" default="auto"/>
+            <property name="hideTableHeader" type="Boolean" label="Hide table header?" required="false"/>
+            <property name="suppressBottomBar" type="Boolean" label="Suppress bottom bar?" required="false"/>
             <property name="showRowNumberColumn" type="Boolean" label="Show row numbers in the first column?" required="false"/>
             <property name="hideCheckboxColumn" type="Boolean" label="Hide checkbox column for row selection?" required="false"/>
+            <property name="maxColumnWidth" type="String" label="Max column width" required="false" default="1000px"/>
+            <property name="minColumnWidth" type="String" label="Min column width" required="false" default="50px"/>
             <property name="resizeColumnDisabled" type="Boolean" label="Disable column resizing?" required="false"/>
+            <property name="columnWidthsMode" type="String" label="Column widths mode" description="Value can be 'fixed' or 'auto'. If 'auto', column width will automatically resize based on the content." required="false" default="fixed"/>
             <property name="enableInfiniteLoading" type="Boolean" label="Enable infinite loading on scrolling to retrieve more records?" description="Requires fixed height" required="false"/>
             <property name="hideDefaultColumnsActions" type="Boolean" label="Hide default actions in column headers?" required="false"/>
             <property name="sortable" type="Boolean" label="Should columns be sortable?" required="false"/>

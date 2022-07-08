@@ -1,8 +1,6 @@
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.TooManyFields')
 public with sharing class ColumnConfig {
 	@AuraEnabled
-	public String actions;
-	@AuraEnabled
 	public CellAttributes cellAttributes;
 	@AuraEnabled
 	public Boolean editable;
@@ -11,13 +9,7 @@ public with sharing class ColumnConfig {
 	@AuraEnabled
 	public String fieldName;
 	@AuraEnabled
-	public Integer fixedWidth;
-	@AuraEnabled
 	public Boolean hideDefaultActions;
-	@AuraEnabled
-	public String iconName;
-	@AuraEnabled
-	public String initialWidth;
 	@AuraEnabled
 	public String label;
 	@AuraEnabled
@@ -28,8 +20,6 @@ public with sharing class ColumnConfig {
 	public String type;
 	@AuraEnabled
 	public TypeAttributes typeAttributes;
-	@AuraEnabled
-	public Boolean wrapText;
 
 	// Documentation states that Date and Datetime fields are no inline editable but it is not true
 	// Types of number are not editable since they are passed as text and causing an exception
