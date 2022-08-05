@@ -345,8 +345,6 @@ This projects leverages Apex Tests for the testing of Apex Classes. Jest Test fo
 
 Contributions are what make the trailblazer community such an amazing place. I regard this component as a way to inspire and learn from others. Any contributions you make are greatly appreciated.
 
-See [CONTRIBUTING.md](/CONTRIBUTING.md) for contribution principles.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](/LICENSE.md) file for details.
