@@ -24,15 +24,13 @@
 							<a class="slds-card__header-link" onclick={handleGoToRelatedList}>{title}</a>
 						</h2>
 					</div>
-					<div class="slds-no-flex">
-						<lightning-button
-							if:false={hideNewAction}
-							label={label.New}
-							title={label.New}
-							onclick={handleCreateRecord}>
-						</lightning-button>
-						<slot name="buttonActions"></slot>
-					</div>
+					<slot name="buttonActions"></slot>
+					<lightning-button
+						if:false={hideNewAction}
+						label={label.New}
+						title={label.New}
+						onclick={handleCreateRecord}>
+					</lightning-button>
 				</header>
 				<div class={subheaderClasses}>
 					<div class="slds-col slds-align-bottom">
